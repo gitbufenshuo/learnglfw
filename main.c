@@ -1,4 +1,34 @@
 #include <GLFW/glfw3.h>
+#include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+#include "math.h"
+//
+int global_count;
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    printf("%s__%d\n", "resize", global_count);
+    global_count++;
+    glViewport(0, 0, width, height);
+}
+
+//
+void processInput(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, 1);
+    if(glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+        printf("you input 9\n");
+}
+//
+
+//
+time_t ts;
+void timestamp(){
+    time(&ts);
+    printf("timeis:%ld\n", ts);
+}
 
 int main(void)
 {
@@ -15,14 +45,26 @@ int main(void)
         glfwTerminate();
         return -1;
     }
-
+    glViewport(320, 240, 50, 50);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-
+    float r = 0.01;
+    float step = 0.01;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        // sleep
+        usleep(20000);
+        // timestamp
+        timestamp();
+        // process input
+        processInput(window);
+
         /* Render here */
+        r = plus_unit(r, step);
+        printf("%f\n", r);
+        glClearColor(r, r, r, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* Swap front and back buffers */
@@ -35,3 +77,4 @@ int main(void)
     glfwTerminate();
     return 0;
 }
+
