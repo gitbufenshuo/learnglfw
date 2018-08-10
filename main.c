@@ -22,7 +22,15 @@ void processInput(GLFWwindow *window)
         printf("you input 9\n");
 }
 //
-
+int* gettime()
+{
+    int a[2] = {};
+    struct timeval start;
+    gettimeofday( &start, NULL );
+    a[0] = start.tv_sec;
+    a[1] = start.tv_usec;
+    return a;
+}
 //
 time_t ts;
 void timestamp(){
@@ -40,7 +48,8 @@ float vertices[] = {
 int main(void)
 {
     GLFWwindow* window;
-
+    int* time;
+    int* time1;
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -59,10 +68,18 @@ int main(void)
     float r = 0.01;
     float step = 0.01;
     /* Loop until the user closes the window */
+    time = gettime();
     while (!glfwWindowShouldClose(window))
     {
         // sleep
         usleep(20000);
+        time1 = gettime();
+        if(time[0] == time[0]){
+            printf("frame:%d\n",1000000/(time1[1]-time[1]));
+        } else {
+            printf("frame:%d\n",1000000/(time1[1]+1000000-time[1]));
+        }
+        time = time1;
         // timestamp
         timestamp();
         // process input
