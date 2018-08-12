@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -34,19 +35,32 @@ void timestamp()
 int main(void)
 {
     GLFWwindow *window;
-    int *time;
-    int *time1;
     /* Initialize the library */
     if (!glfwInit())
         return -1;
 
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
     {
+        printf("glfwCreateWindow_error\n");
         glfwTerminate();
         return -1;
     }
+    glfwMakeContextCurrent(window);
+    //
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    {
+        printf("Failed to initialize OpenGL context\n");
+        return -1;
+    }
+    
     glViewport(320, 240, 50, 50);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     /* Make the window's context current */
@@ -58,7 +72,8 @@ int main(void)
         usleep(28000);
         // get frame per second
         int fps = getfps();
-        if (fps > 0) {
+        if (fps > 0)
+        {
             printf("fps:%d\n", fps);
         }
         // process input
@@ -66,6 +81,7 @@ int main(void)
 
         /* Render here */
         change_smooth(0.01f);
+        draw_triangle();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
