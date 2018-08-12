@@ -5,6 +5,7 @@
 
 #include "utils/math.h"
 #include "utils/time.h"
+#include "hello/hello.h"
 //
 int global_count;
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -30,12 +31,6 @@ void timestamp()
     printf("timeis:%ld\n", ts);
 }
 
-//
-float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f};
-//
 int main(void)
 {
     GLFWwindow *window;
@@ -56,8 +51,6 @@ int main(void)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    float r = 0.01;
-    float step = 0.01;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -72,10 +65,7 @@ int main(void)
         processInput(window);
 
         /* Render here */
-        r = plus_unit(r, step);
-
-        glClearColor(r, r, r, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        change_smooth(0.01f);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
