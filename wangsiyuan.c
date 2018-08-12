@@ -3,7 +3,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "math.h"
+#include "utils/math.h"
+#include "utils/time.h"
 //
 int global_count;
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -20,29 +21,6 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, 1);
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
         printf("you input 9\n");
-}
-//
-int timeold_ms;
-int timenew_ms;
-int count = -1;
-
-int getfps()
-{
-    count++;
-    struct timeval start;
-    gettimeofday(&start, NULL);
-    int ms = start.tv_sec * 1000 + start.tv_usec/1000;;
-    if (count % 3 == 0)
-    {
-        timeold_ms = ms;
-        return -1;
-    }
-    else if (count % 3 == 1)
-    {
-        timenew_ms = ms;
-        return 1000/(timenew_ms - timeold_ms);
-    }
-    return -1;
 }
 //
 time_t ts;
