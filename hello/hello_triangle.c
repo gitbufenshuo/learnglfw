@@ -7,35 +7,23 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../utils/stb_image.h"
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f, 0.8f,
-    0.5f, -0.5f, 0.0f, 1.0f,
-    0.0f, 0.5f, 0.0f, 1.0f,
-    0.0f, 0.0f, 0.0f, 0.8f,
-    -0.5f, -0.5f, 0.0f, 0.1f,
-    0.5f, -0.5f, 0.0f, 0.1f,
-    0.0f, 0.5f, 0.0f, 0.1f,
-    0.0f, 0.0f, 0.0f, 0.1f,
-    //texture
-    1.0f, 1.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f};
+    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f};
 unsigned int indices[] = {
     // note that we start from 0!
     0, 1, 2, // first triangle
-    1, 2, 3  // second triangle
+    0, 2, 3  // second triangle
 };
-float texCoords[] = {
-    0.0f, 0.0f, // lower-left corner
-    1.0f, 0.0f, // lower-right corner
-    0.5f, 1.0f  // top-center corner
-};
-float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
+
 unsigned int shaderProgram;
 void compile()
 {
     const char *vertex_shader = fileReadAll("./hello/vertex_shader.glsl");
-    printf("ver-->%s\n", vertex_shader);
+    // printf("ver-->%s\n", vertex_shader);
     const char *fragment_shader = fileReadAll("./hello/fragment_shader.glsl");
-    printf("ver-->%s\n", fragment_shader);
+    // printf("ver-->%s\n", fragment_shader);
     // vertex
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -93,32 +81,34 @@ void prepare_draw_triangle()
 
     // 2. copy our vertices array in a buffer for OpenGL to use
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, 16 * 4, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 6 * 4 * 4, vertices, GL_STATIC_DRAW);
 
     // 3.0 bind VAO should be here before set vertex attribute
     glBindVertexArray(VAO[0]);
     // 3.1 then set our vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(0));
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(12));
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * 4));
     glEnableVertexAttribArray(1);
     //text
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)(32 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(4 * 4));
     glEnableVertexAttribArray(2);
     // 3.2 the EBO set
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 4, indices, GL_STATIC_DRAW);
     // 3.3 the Textures
     glGenTextures(1, &texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width, height, nrChannels;
     unsigned char *data = stbi_load("./learng.jpg", &width, &height, &nrChannels, 0);
     if (data)
     {
+        printf("image:%d__%d\n", width, height);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
@@ -127,20 +117,6 @@ void prepare_draw_triangle()
         printf("fail to create texture");
     }
     stbi_image_free(data);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // 2. copy our vertices array in a buffer for OpenGL to use
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    // glBufferData(GL_ARRAY_BUFFER, 12 * 4, vertices + 16, GL_STATIC_DRAW);
-    // 3.0 bind VAO should be here before set vertex attribute
-    glBindVertexArray(VAO[1]);
-    // 3.1 then set our vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(0));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(12));
-    glEnableVertexAttribArray(1);
-    // 3.3 the EBO set
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12, indices + 3, GL_STATIC_DRAW);
 
     // last. config is set, you can do render in the main loop
 }
@@ -151,5 +127,5 @@ void draw_triangle()
     prepare_draw_triangle();
     glBindVertexArray(VAO[0]);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
