@@ -8,11 +8,13 @@
 char* fileReadAll (char* filename) {
     int input_fd;
     input_fd = open (filename, O_RDONLY);
-    int length = lseek(input_fd, 0, SEEK_END)+1; 
-    char* res = malloc(length + 1); // 1 for the 0 end
+    int length = lseek(input_fd, 0, SEEK_END); 
+    printf("%d++++%d---%lu\n",input_fd, length,sizeof(char));
+    char* res = malloc(length+1); // 1 for the 0 end
     res[length] = 0;
     lseek(input_fd, 0, SEEK_SET);
-    read (input_fd, res, length);
+    int readn = read (input_fd, res, length);
+    printf("readn ---%d\n",readn);
     close(input_fd);
     return res;
 }

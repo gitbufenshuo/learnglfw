@@ -1,9 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <math.h>
-
-const char *vertex_shader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in float xScale;\n out vec3 color;\nvoid main()\n{\n    gl_Position = vec4(aPos.x * xScale, aPos.y, aPos.z, 1.0);\ncolor = aPos;\n}\n";
-const char *fragment_shader = "#version 330 core\nout vec4 FragColor;\nuniform vec4 ourColor;\nuniform vec4 ourColor1;\nin vec3  color;\nvoid main()\n{\n    FragColor = vec4(color,1.0);\n} \n";
+#include <stdlib.h>
+#include  <stdio.h>
+#include "../utils/file.h"
 float vertices[] = {
     -0.5f, -0.5f, 0.0f, 0.8f,
     0.5f, -0.5f, 0.0f, 1.0f,
@@ -21,16 +21,36 @@ unsigned int indices[] = {
 unsigned int shaderProgram;
 void compile()
 {
+    const char *vertex_shader = fileReadAll("./hello/vertex_shader.glsl");
+    printf("ver-->%s\n", vertex_shader);
+    const char *fragment_shader = fileReadAll("./hello/fragment_shader.glsl");
+    printf("ver-->%s\n", fragment_shader);
     // vertex
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertex_shader, NULL);
     glCompileShader(vertexShader);
+    int  success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        printf("vvv--%s\n",infoLog);
+    }
     // fragment
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
     glCompileShader(fragmentShader);
+    int  success1;
+    char infoLog1[512];
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success1);
+    if(!success1)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog1);
+        printf("fff--%s\n",infoLog1);
+    }
     //
     shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
@@ -85,7 +105,7 @@ void prepare_draw_triangle()
     glEnableVertexAttribArray(1);
     // 3.3 the EBO set
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12, indices + 3, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12, indices + 3, GL_STATIC_DRAW); 
 
     // last. config is set, you can do render in the main loop
 }
