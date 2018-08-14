@@ -1,8 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <math.h>
 
-const char *vertex_shader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in float xScale;\nvoid main()\n{\n    gl_Position = vec4(aPos.x * xScale, aPos.y, aPos.z, 1.0);\n}\n";
-const char *fragment_shader = "#version 330 core\nout vec4 FragColor;\n\nvoid main()\n{\n    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n} \n";
+const char *vertex_shader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in float xScale;\n out vec3 color;\nvoid main()\n{\n    gl_Position = vec4(aPos.x * xScale, aPos.y, aPos.z, 1.0);\ncolor = aPos;\n}\n";
+const char *fragment_shader = "#version 330 core\nout vec4 FragColor;\nuniform vec4 ourColor;\nuniform vec4 ourColor1;\nin vec3  color;\nvoid main()\n{\n    FragColor = vec4(color,1.0);\n} \n";
 float vertices[] = {
     -0.5f, -0.5f, 0.0f, 0.8f,
     0.5f, -0.5f, 0.0f, 1.0f,
@@ -93,6 +94,6 @@ void draw_triangle()
 {
     jiou++;
     prepare_draw_triangle();
-    glBindVertexArray(VAO[jiou % 2]);
+    glBindVertexArray(VAO[0]);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }

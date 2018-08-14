@@ -1,0 +1,12 @@
+const char *vertex_shader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in float xScale;\nout vec4 vertexColor;\nvoid main()\n{\n    gl_Position = vec4(aPos.x * xScale, aPos.y, aPos.z, 1.0);\nvertexColor = vec4(aPos.x * xScale, aPos.y, aPos.z, 1.0);\n}\n";
+const char *fragment_shader = "#version 330 core\nout vec4 FragColor;\nin vec4  vertexColor;\nvoid main()\n{\n    FragColor =  vertexColor;\n} \n";
+
+
+
+ float timeValue = glfwGetTime();
+    float greenValue = (sin(timeValue) / 2.0f) + 0.5f; 
+    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+    int vertexColorLocation1 = glGetUniformLocation(shaderProgram, "ourColor1");
+    //glUseProgram(shaderProgram);
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+    glUniform4f(vertexColorLocation1, 0.0f, 0.0f, greenValue, 1.0f);
