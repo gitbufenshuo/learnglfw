@@ -3,29 +3,15 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "hello.h"
 #include "../utils/file.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../utils/stb_image.h"
-float vertices[] = {
-    -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f ,  0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,    4.0f, 0.0f,
-    0.5f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f,    4.0f, 4.0f,
-    -0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 4.0f};
-unsigned int indices[] = {
-    // note that we start from 0!
-    0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
-    // 2, 1, 3,
-    // 1, 0, 3
-};
 
-unsigned int shaderProgram;
-void compile()
-{
-    const char *vertex_shader = fileReadAll("./hello/vertex_shader.glsl");
-    // printf("ver-->%s\n", vertex_shader);
-    const char *fragment_shader = fileReadAll("./hello/fragment_shader.glsl");
-    // printf("ver-->%s\n", fragment_shader);
+void CompileShader (void *self, char *vs, char *fs) {
+    ST_Shader* myshader = (ST_Shader*)self;
+    const char *vertex_shader = fileReadAll(vs);
+    const char *fragment_shader = fileReadAll(fs);
     // vertex
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -53,14 +39,52 @@ void compile()
         printf("fff--%s\n", infoLog1);
     }
     //
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    myshader->ID = glCreateProgram();
+    glAttachShader(myshader->ID, vertexShader);
+    glAttachShader(myshader->ID, fragmentShader);
+    glLinkProgram(myshader->ID);
     // delete shader because we have the generated program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
+void UseShader(void* self) {
+    ST_Shader* myshader = (ST_Shader*)self;
+    glUseProgram(myshader->ID);
+}
+
+void ShaderSetInt(void *self, char *name, int value){
+    ST_Shader* myshader = (ST_Shader*)self;
+    glUniform1i(glGetUniformLocation(myshader->ID, name), value);
+}
+void ShaderSetFloat(void *self, char *name, float value){
+    ST_Shader* myshader = (ST_Shader*)self;
+    glUniform1f(glGetUniformLocation(myshader->ID, name), value);
+}
+
+ST_Shader* myShader;
+ST_Shader* NewST_Shader(){
+    myShader = malloc(sizeof(ST_Shader));
+    memset(myShader, 0, sizeof(ST_Shader));
+    myShader ->compile = CompileShader;
+    myShader ->use = UseShader;
+    myShader ->setInt = ShaderSetInt;
+    myShader ->setFloat = ShaderSetFloat;
+    return myShader;
+}
+
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f ,  0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,    4.0f, 0.0f,
+    0.5f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f,    4.0f, 4.0f,
+    -0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 4.0f};
+unsigned int indices[] = {
+    // note that we start from 0!
+    0, 1, 3, // first triangle
+    1, 2, 3  // second triangle
+    // 2, 1, 3,
+    // 1, 0, 3
+};
+
 unsigned int VBO[] = {0, 0};
 unsigned int VAO[] = {0, 0};
 unsigned int EBO[] = {0, 0};
@@ -74,8 +98,8 @@ void prepare_draw_triangle()
     }
     prepared = 1;
     // GEN THE SHADER PROGRAM AND USE IT
-    compile();
-    glUseProgram(shaderProgram);
+    myShader = NewST_Shader();
+    myShader->compile((void*) myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     glGenBuffers(2, VBO);
     glGenVertexArrays(2, VAO);
@@ -129,12 +153,9 @@ void draw_triangle()
 {
     jiou++;
     prepare_draw_triangle();
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(VAO[0]);
     float timeValue = glfwGetTime();
-    float greenValue = (sin(timeValue) / 2.0f) + 0.5f; 
-    int vertexColorLocation = glGetUniformLocation(shaderProgram, "change");
-    glUniform1f(vertexColorLocation, greenValue);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+    myShader->use((void*)myShader);
+    myShader->setFloat((void*)myShader, "change", greenValue);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
