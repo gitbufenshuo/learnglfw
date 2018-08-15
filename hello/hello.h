@@ -17,15 +17,19 @@ typedef struct
     Fn_SetShaderFloat setFloat;
 } ST_Shader;
 
+typedef void (*Fn_SetAllContext)(void *self, char* image);
 typedef struct
 {
+    int set;
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
+    unsigned int TBO;
     float* vertices;
     int vertices_num;
     unsigned int* indices;
-
+    int indices_num;
+    Fn_SetAllContext setAll;
 } ST_Mesh;
 #define HELLO 1111
 #endif
