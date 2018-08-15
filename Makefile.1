@@ -1,0 +1,18 @@
+   whoami := $(shell whoami)
+   objects = $(whoami).o file.o math.o time.o  hello_triangle.o hello_window.o glad.o
+   edit : $(objects)
+
+		cc-o edit $(objects)
+
+   (whoami).o :  math.h time.h hello.h ./glad/include/glad/glad.h
+ 
+		gcc -I./glad/include/glad -lglfw -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -c $(whoami).c 
+
+   hello_triangle.o :  file.h stb_image.h
+    
+   hello_window.o :  math.h
+
+   .PHONY: clean
+   clean:
+	
+		rm edit $(objects)**
