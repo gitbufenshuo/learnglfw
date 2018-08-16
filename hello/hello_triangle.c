@@ -172,7 +172,7 @@ void draw_triangle()
     jiou++;
     prepare_draw_triangle();
     float timeValue = glfwGetTime();
-    float change = (sin(timeValue) / 2.0f) + 0.5f;
+    float change = ((sin(timeValue) / 2.0f) + 0.5f) * 0.0f;
     myShader->use((void *)myShader);
     myShader->setFloat((void *)myShader, "change", change);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
