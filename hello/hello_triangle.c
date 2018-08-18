@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "hello.h"
 #include "../utils/file.h"
+#include "../utils/utils.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../utils/stb_image.h"
 
@@ -76,7 +77,12 @@ void ShaderSetFloat(void *self, char *name, float value)
     ST_Shader *myshader = (ST_Shader *)self;
     glUniform1f(glGetUniformLocation(myshader->ID, name), value);
 }
-
+void ShaderSetMat4(void *self, char *name, float *value_list)
+{
+    ST_Shader *myshader = (ST_Shader *)self;
+    unsigned int transformLoc = glGetUniformLocation(myshader->ID, name);
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, value_list);
+}
 ST_Shader *myShader;
 ST_Shader *NewST_Shader()
 {
@@ -86,11 +92,14 @@ ST_Shader *NewST_Shader()
     myShader->use = UseShader;
     myShader->setInt = ShaderSetInt;
     myShader->setFloat = ShaderSetFloat;
+    myShader->setMat4 = ShaderSetMat4;
     return myShader;
 }
-void MeshSetAllContext(void* self, char* image){
-    ST_Mesh *my_mesh = (ST_Mesh*)self;
-    if (my_mesh->set == 1) {
+void MeshSetAllContext(void *self, char *image)
+{
+    ST_Mesh *my_mesh = (ST_Mesh *)self;
+    if (my_mesh->set == 1)
+    {
         return;
     }
     my_mesh->set = 1;
@@ -99,7 +108,7 @@ void MeshSetAllContext(void* self, char* image){
     glGenBuffers(1, &(my_mesh->EBO));
 
     glBindBuffer(GL_ARRAY_BUFFER, my_mesh->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*(my_mesh->vertices_num), my_mesh->vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (my_mesh->vertices_num), my_mesh->vertices, GL_STATIC_DRAW);
 
     //
     glBindVertexArray(my_mesh->VAO);
@@ -135,7 +144,6 @@ void MeshSetAllContext(void* self, char* image){
         printf("fail to create texture");
     }
     stbi_image_free(data);
-
 }
 ST_Mesh *myMesh;
 ST_Mesh *NewST_Mesh()
@@ -163,17 +171,38 @@ void prepare_draw_triangle()
     myShader->compile((void *)myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     myMesh = NewST_Mesh();
-    myMesh->setAll((void*)myMesh, "./learng.jpg");
+    myMesh->setAll((void *)myMesh, "./learng.jpg");
     // last. config is set, you can do render in the main loop
 }
+
+////////////
+////////////
+////////////
+////////////
+////////////
+////////////
+////////////
+////////////
+////////////
 int jiou = 0;
+ST_MAT4 *transform;
 void draw_triangle()
 {
     jiou++;
+    if (transform == 0)
+    {
+        transform = NewMat4(0);
+    }
+    else
+    {
+        PrintMat4(transform);
+    }
     prepare_draw_triangle();
     float timeValue = glfwGetTime();
-    float change = ((sin(timeValue) / 2.0f) + 0.5f) * 0.0f;
+    float change = (sin(timeValue) / 2.0f) + 0.5f;
+    (transform->element)[0] = change;
+    (transform->element)[1] = change;
     myShader->use((void *)myShader);
-    myShader->setFloat((void *)myShader, "change", change);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    myShader->setMat4((void *)myShader, "transform", transform->element);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }

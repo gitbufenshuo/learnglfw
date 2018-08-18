@@ -8,6 +8,7 @@ typedef void (*Fn_CompileShader)(void *self, char *vs, char *fs);
 typedef void (*Fn_UseShaderProgram)(void *self);
 typedef void (*Fn_SetShaderInt)(void *self, char *name, int value);
 typedef void (*Fn_SetShaderFloat)(void *self, char *name, float value);
+typedef void (*Fn_SetShaderMat4)(void *self, char *name, float* value);
 typedef struct
 {
     unsigned int ID;
@@ -15,6 +16,7 @@ typedef struct
     Fn_UseShaderProgram use;
     Fn_SetShaderInt setInt;
     Fn_SetShaderFloat setFloat;
+    Fn_SetShaderMat4 setMat4;
 } ST_Shader;
 
 typedef void (*Fn_SetAllContext)(void *self, char* image);
