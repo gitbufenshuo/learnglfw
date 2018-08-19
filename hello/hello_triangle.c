@@ -10,10 +10,10 @@
 #include "../utils/stb_image.h"
 
 float vertices[] = {
-    -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f,
+    -0.2f, -0.2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f,
     0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, 4.0f,
-    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 4.0f};
+    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 4.0f};
 unsigned int indices[] = {
     // note that we start from 0!
     0, 1, 3, // first triangle
@@ -186,6 +186,44 @@ void prepare_draw_triangle()
 ////////////
 int jiou = 0;
 ST_MAT4 *transform;
+ST_Gameobject *camera;
+ST_Gameobject *myobject;
+void model_t()
+{
+    if (myobject == 0)
+    {
+        myobject = malloc(sizeof(ST_Gameobject));
+        memset(myobject, 0, sizeof(ST_Gameobject));
+    }
+    float timeValue = glfwGetTime();
+    myobject->x = cos(timeValue);
+
+    myobject->y = sin(timeValue);
+    printf("myobject->y %f\n", myobject->y);
+    // first : rotation
+    transform = D3_Rotate(transform, myobject->x_rotate_degree, myobject->y_rotate_degree, myobject->z_rotate_degree);
+    // second : translate
+    transform = D3_Translate(transform, myobject->x, myobject->y, myobject->z);
+}
+void view_t()
+{
+    if (camera == 0)
+    {
+        camera = malloc(sizeof(ST_Gameobject));
+        memset(camera, 0, sizeof(ST_Gameobject));
+    }
+    // first : rotation
+    transform = D3_Rotate(transform, -myobject->x_rotate_degree, -myobject->y_rotate_degree, -myobject->z_rotate_degree);
+    // second : translate
+    transform = D3_Translate(transform, -myobject->x, -myobject->y, -myobject->z);
+}
+void projection_t()
+{
+}
+void modify()
+{
+    (transform->element)[12] = (transform->element)[12] + 0.001f;
+}
 void draw_triangle()
 {
     jiou++;
@@ -193,12 +231,17 @@ void draw_triangle()
     {
         transform = NewMat4(0);
     }
-    transform = D3_Rotate(transform, 0.0f, 0.0f, 1.0f);
-    // PrintMat4(transform);
-    // return;
+    else
+    {
+        SetMat4Identity(transform);
+    }
+    model_t();
+    // view_t();
+    // modify();
+    PrintMat4(transform);
     prepare_draw_triangle();
-    float timeValue = glfwGetTime();
-    float change = sin(3.141592f / 2.0f);
+    // float timeValue = glfwGetTime();
+    // float change = sin(3.141592f / 2.0f);
     // transform = MatMat4(transform, transform);
     // (transform->element)[1] = change;
     myShader->use((void *)myShader);

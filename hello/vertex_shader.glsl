@@ -7,7 +7,7 @@ out vec3 vertexColor;
 out vec2 TexCoord;
 void main()
 {
-    gl_Position =transform * vec4(aPos, 1.0);
+    gl_Position = transform * vec4(aPos, 1.0);
     vertexColor = vec3(aColor.x, aColor.y, aColor.z);
     TexCoord = aTexCoord;
 }

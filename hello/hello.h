@@ -33,5 +33,14 @@ typedef struct
     int indices_num;
     Fn_SetAllContext setAll;
 } ST_Mesh;
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+    float x_rotate_degree;
+    float y_rotate_degree;
+    float z_rotate_degree;
+} ST_Gameobject;
 #define HELLO 1111
 #endif
