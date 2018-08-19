@@ -1,3 +1,6 @@
+*.jpg
+*.png
+resource/
 .vscode
 # Prerequisites
 *.d
