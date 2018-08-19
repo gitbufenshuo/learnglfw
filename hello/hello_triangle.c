@@ -3,6 +3,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
+
 #include "hello.h"
 #include "../utils/file.h"
 #include "../utils/utils.h"
@@ -11,9 +14,9 @@
 
 float vertices[] = {
     -0.2f, -0.2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f,
+    0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
     0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, 4.0f,
-    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 4.0f};
+    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
 unsigned int indices[] = {
     // note that we start from 0!
     0, 1, 3, // first triangle
@@ -136,7 +139,7 @@ void MeshSetAllContext(void *self, char *image)
     if (data)
     {
         printf("image:%d__%d\n", width, height);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -171,7 +174,7 @@ void prepare_draw_triangle()
     myShader->compile((void *)myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     myMesh = NewST_Mesh();
-    myMesh->setAll((void *)myMesh, "./learng.jpg");
+    myMesh->setAll((void *)myMesh, "resource/dota2.png");
     // last. config is set, you can do render in the main loop
 }
 
@@ -187,6 +190,7 @@ void prepare_draw_triangle()
 int jiou = 0;
 ST_MAT4 *transform;
 ST_Gameobject *camera;
+ST_CUS_CAMERA *camera_cus;
 ST_Gameobject *myobject;
 void model_t()
 {
@@ -196,10 +200,11 @@ void model_t()
         memset(myobject, 0, sizeof(ST_Gameobject));
     }
     float timeValue = glfwGetTime();
-    myobject->x = cos(timeValue);
-
-    myobject->y = sin(timeValue);
-    printf("myobject->y %f\n", myobject->y);
+    // myobject->x = cos(timeValue);
+    // myobject->y = sin(timeValue);
+    // printf("myobject->y %f\n", myobject->y);
+    // myobject->x_rotate_degree = sin(timeValue) * 360.0f;
+    // myobject->z = 1.1f;
     // first : rotation
     transform = D3_Rotate(transform, myobject->x_rotate_degree, myobject->y_rotate_degree, myobject->z_rotate_degree);
     // second : translate
@@ -211,18 +216,51 @@ void view_t()
     {
         camera = malloc(sizeof(ST_Gameobject));
         memset(camera, 0, sizeof(ST_Gameobject));
+        camera_cus = malloc(sizeof(ST_CUS_CAMERA));
+        memset(camera_cus, 0, sizeof(ST_CUS_CAMERA));
+        camera->custom = camera_cus;
+        camera_cus->near_distance = 1.0f;
+        camera_cus->far_distance = 1000.0f;
+        camera_cus->near_long = 100.0f;
+        camera_cus->far_long = 10000.0f;
     }
+    float timeValue = glfwGetTime();
+
+    camera->z = 10.0f;
     // first : rotation
-    transform = D3_Rotate(transform, -myobject->x_rotate_degree, -myobject->y_rotate_degree, -myobject->z_rotate_degree);
+    transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
     // second : translate
-    transform = D3_Translate(transform, -myobject->x, -myobject->y, -myobject->z);
+    transform = D3_Translate(transform, -camera->x, -camera->y, -camera->z);
 }
 void projection_t()
 {
+    // projectio is relative to camera
+    if (camera == 0)
+    {
+        camera = malloc(sizeof(ST_Gameobject));
+        memset(camera, 0, sizeof(ST_Gameobject));
+        camera_cus = malloc(sizeof(ST_CUS_CAMERA));
+        memset(camera_cus, 0, sizeof(ST_CUS_CAMERA));
+        camera->custom = camera_cus;
+        camera_cus->near_distance = 1.0f;
+        camera_cus->far_distance = 1000.0f;
+        camera_cus->near_long = 100.0f;
+        camera_cus->far_long = 10000.0f;
+    }
+    // z --> (0, 1) || x --> (-1 , 1) || y --> (-1, 1)
+    transform = D3_Homoz(transform);
+    printf("theHomo-->::::\n");
+    float k = -(1.0f / 999.0f);
+    float b = -k;
+    // z should scale and then translate
+    transform = D3_Scale(transform, 1.0f, 1.0f, k);
+    transform = D3_Translate(transform, 0.0f, 0.0f, b);
+    PrintMat4(transform);
+    usleep(111128000);
 }
 void modify()
 {
-    (transform->element)[12] = (transform->element)[12] + 0.001f;
+    (transform->element)[15] = (transform->element)[15] + 0.001f;
 }
 void draw_triangle()
 {
@@ -236,7 +274,8 @@ void draw_triangle()
         SetMat4Identity(transform);
     }
     model_t();
-    // view_t();
+    view_t();
+    projection_t();
     // modify();
     PrintMat4(transform);
     prepare_draw_triangle();

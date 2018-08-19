@@ -20,3 +20,6 @@ extern ST_MAT4 *MatMat4(ST_MAT4 *mat4_left, ST_MAT4 *mat4_right);
 extern ST_MAT4 *D3_Rotate(ST_MAT4 *mat4, float x_degree, float y_degree, float z_degree);
 extern ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value);
 extern void SetMat4Identity(ST_MAT4 *mat4);
+extern ST_MAT4 *D3_Homoz(ST_MAT4 *mat4);
+extern ST_MAT4 *D3_Scale(ST_MAT4 *mat4, float x, float y, float z);
+

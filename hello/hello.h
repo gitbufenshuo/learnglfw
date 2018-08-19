@@ -41,6 +41,14 @@ typedef struct {
     float x_rotate_degree;
     float y_rotate_degree;
     float z_rotate_degree;
+    void* custom;
 } ST_Gameobject;
+
+typedef struct {
+    float near_distance;
+    float far_distance;
+    float near_long;
+    float far_long;
+} ST_CUS_CAMERA;
 #define HELLO 1111
 #endif
