@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 ST_VEC4 *MatVec4(ST_MAT4 *mat4, ST_VEC4 *vec4)
 {
     float *mat4ele = mat4->element;
@@ -43,12 +44,69 @@ ST_VEC4 *NewVec4(float one, float two, float three, float four)
     vec4->element[3] = four;
     return vec4;
 }
+
+float Mat4Row_Column(ST_MAT4 *mat4, int row, int column)
+{
+    return (mat4->element)[(row - 1) * 4 + (column - 1)];
+}
 void PrintMat4(ST_MAT4 *mat4)
 {
     printf("-\n");
-    float *mat4ele = mat4->element;
-    for (int i = 0; i != 4; i++)
+
+    for (int row = 1; row != 5; row++)
     {
-        printf("%f %f %f %f\n", mat4ele[i * 4], mat4ele[i * 4 + 1], mat4ele[i * 4 + 2], mat4ele[i * 4 + 3]);
+        printf("%f %f %f %f\n", Mat4Row_Column(mat4, row, 1), Mat4Row_Column(mat4, row, 2), Mat4Row_Column(mat4, row, 3), Mat4Row_Column(mat4, row, 4));
     }
+}
+void Mat4SetValue(ST_MAT4 *mat4, int row, int column, float value)
+{
+    (mat4->element)[(row - 1) * 4 + (column - 1)] = value;
+}
+ST_MAT4 *MatMat4(ST_MAT4 *mat4_left, ST_MAT4 *mat4_right)
+{
+    ST_MAT4 *res = NewMat4(0);
+    float final_ele = 0.0f;
+    for (int row = 1; row != 5; row++)
+    {
+        for (int column = 1; column != 5; column++)
+        {
+            final_ele = 0.0f;
+            for (int index = 0; index != 4; index++)
+            {
+                float f = Mat4Row_Column(mat4_left, row, 1 + index);
+                float b = Mat4Row_Column(mat4_right, 1 + index, column);
+                final_ele += (f * b);
+                // printf("row-->%d  col-->%d  index-->%d::%f*%f=%f\n", row, column, index, f, b, final_ele);
+            }
+            Mat4SetValue(res, row, column, final_ele);
+        }
+    }
+    return res;
+}
+float RadiusOfDegree(float degree)
+{
+    return (3.141592653 * degree) / 180.0f;
+}
+// x y z means z y x
+ST_MAT4 *D3_Rotate(ST_MAT4 *mat4, float x_degree, float y_degree, float z_degree)
+{
+    ST_MAT4 *res = NewMat4(0);
+    float cosy = cos(RadiusOfDegree(y_degree));
+    float cosz = cos(RadiusOfDegree(z_degree));
+    float sinz = sin(RadiusOfDegree(z_degree));
+    float siny = sin(RadiusOfDegree(y_degree));
+    float cosx = cos(RadiusOfDegree(x_degree));
+    float sinx = sin(RadiusOfDegree(x_degree));
+    (res->element)[0] = cosy * cosz;
+    (res->element)[1] = -(cosy * sinz);
+    (res->element)[2] = siny;
+
+    (res->element)[4] = cosx * sinz + sinx * siny * cosz;
+    (res->element)[5] = cosx * cosz - sinx * siny * sinz;
+    (res->element)[6] = -(sinx * cosy);
+
+    (res->element)[8] = sinx * sinz - cosx * siny * cosz;
+    (res->element)[9] = sinx * cosz + cosx * siny * sinz;
+    (res->element)[10] = cosx * cosy;
+    return MatMat4(res, mat4);
 }

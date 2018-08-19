@@ -10,10 +10,10 @@
 #include "../utils/stb_image.h"
 
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f,
     0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, 4.0f,
-    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 4.0f};
+    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 4.0f};
 unsigned int indices[] = {
     // note that we start from 0!
     0, 1, 3, // first triangle
@@ -193,15 +193,14 @@ void draw_triangle()
     {
         transform = NewMat4(0);
     }
-    else
-    {
-        PrintMat4(transform);
-    }
+    transform = D3_Rotate(transform, 0.0f, 0.0f, 1.0f);
+    // PrintMat4(transform);
+    // return;
     prepare_draw_triangle();
     float timeValue = glfwGetTime();
-    float change = (sin(timeValue) / 2.0f) + 0.5f;
-    (transform->element)[0] = change;
-    (transform->element)[1] = change;
+    float change = sin(3.141592f / 2.0f);
+    // transform = MatMat4(transform, transform);
+    // (transform->element)[1] = change;
     myShader->use((void *)myShader);
     myShader->setMat4((void *)myShader, "transform", transform->element);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
