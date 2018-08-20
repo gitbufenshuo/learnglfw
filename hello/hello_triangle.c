@@ -13,14 +13,16 @@
 #include "../utils/stb_image.h"
 
 float vertices[] = {
-    -0.2f, -0.2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-    0.2f, 0.2f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+    -0.2f, -0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+    0.2f, -0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+    -0.2f, -0.2f, -0.4f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
 unsigned int indices[] = {
     // note that we start from 0!
     0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
+    0, 1, 2, // second triangle
+    0, 3, 2,
+    0, 2, 3
     // 2, 1, 3,
     // 1, 0, 3
 };
@@ -139,7 +141,7 @@ void MeshSetAllContext(void *self, char *image)
     if (data)
     {
         printf("image:%d__%d\n", width, height);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -175,7 +177,7 @@ void prepare_draw_triangle()
     myShader->compile((void *)myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     myMesh = NewST_Mesh();
-    myMesh->setAll((void *)myMesh, "resource/dota2logo.jpg");
+    myMesh->setAll((void *)myMesh, "resource/dota2.png");
     // last. config is set, you can do render in the main loop
 }
 
@@ -204,7 +206,8 @@ void model_t()
     // myobject->x = cos(timeValue);
     // myobject->y = sin(timeValue);
     // printf("myobject->y %f\n", myobject->y);
-    myobject->x_rotate_degree = sin(timeValue) * 360.0f;
+    myobject->x_rotate_degree =  30.0f;
+    myobject->y_rotate_degree = sin(timeValue*0.06) * 360.0f;
     // myobject->z = 1.1f;
     // first : rotation
     transform = D3_Rotate(transform, myobject->x_rotate_degree, myobject->y_rotate_degree, myobject->z_rotate_degree);
@@ -270,7 +273,7 @@ void projection_t()
 }
 void modify()
 {
-    (transform->element)[15] = fabs((transform->element)[15]);
+    transform = D3_Translate(transform, 0.0f, 0.5, 0.0f);
 }
 void draw_triangle()
 {
@@ -295,5 +298,9 @@ void draw_triangle()
     // (transform->element)[1] = change;
     myShader->use((void *)myShader);
     myShader->setMat4((void *)myShader, "transform", transform->element);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    modify();
+    myShader->setMat4((void *)myShader, "transform", transform->element);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
