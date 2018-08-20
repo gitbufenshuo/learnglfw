@@ -15,7 +15,7 @@
 float vertices[] = {
     -0.2f, -0.2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
     0.2f, -0.2f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-    0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, 4.0f,
+    0.2f, 0.2f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
     -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
 unsigned int indices[] = {
     // note that we start from 0!
@@ -204,7 +204,7 @@ void model_t()
     // myobject->x = cos(timeValue);
     // myobject->y = sin(timeValue);
     // printf("myobject->y %f\n", myobject->y);
-    // myobject->x_rotate_degree = sin(timeValue) * 360.0f;
+    myobject->x_rotate_degree = sin(timeValue) * 360.0f;
     // myobject->z = 1.1f;
     // first : rotation
     transform = D3_Rotate(transform, myobject->x_rotate_degree, myobject->y_rotate_degree, myobject->z_rotate_degree);
@@ -227,7 +227,7 @@ void view_t()
     }
     float timeValue = glfwGetTime();
 
-    camera->z = 10.0f;
+    camera->z = 2.0f;
     // camera->x_rotate_degree = sin(timeValue) * 90;
     // first : rotation
     transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
@@ -295,5 +295,5 @@ void draw_triangle()
     // (transform->element)[1] = change;
     myShader->use((void *)myShader);
     myShader->setMat4((void *)myShader, "transform", transform->element);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
