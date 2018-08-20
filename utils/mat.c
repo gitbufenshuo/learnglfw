@@ -133,13 +133,15 @@ ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value
     Mat4SetValue(res, 1, 4, x_value);
     Mat4SetValue(res, 2, 4, y_value);
     Mat4SetValue(res, 3, 4, z_value);
+    printf("the translate mat is :");
+    PrintMat4(res);
     return MatMat4(res, mat4);
 }
 ST_MAT4 *D3_Homoz(ST_MAT4 *mat4)
 {
     ST_MAT4 *res = NewMat4(0);
-    Mat4SetValue(res, 4, 4, 0);
-    Mat4SetValue(res, 4, 3, 1);
+    Mat4SetValue(res, 4, 4, 0.0f);
+    Mat4SetValue(res, 4, 3, -1.0f);
     return MatMat4(res, mat4);
 }
 ST_MAT4 *D3_Scale(ST_MAT4 *mat4, float x, float y, float z)

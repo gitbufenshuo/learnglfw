@@ -139,12 +139,13 @@ void MeshSetAllContext(void *self, char *image)
     if (data)
     {
         printf("image:%d__%d\n", width, height);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
-        printf("fail to create texture");
+        printf("fail_to_create_texture_:%s_not_found\n", image);
+        usleep(1000000000);
     }
     stbi_image_free(data);
 }
@@ -174,7 +175,7 @@ void prepare_draw_triangle()
     myShader->compile((void *)myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     myMesh = NewST_Mesh();
-    myMesh->setAll((void *)myMesh, "resource/dota2.png");
+    myMesh->setAll((void *)myMesh, "resource/dota2logo.jpg");
     // last. config is set, you can do render in the main loop
 }
 
@@ -227,6 +228,7 @@ void view_t()
     float timeValue = glfwGetTime();
 
     camera->z = 10.0f;
+    // camera->x_rotate_degree = sin(timeValue) * 90;
     // first : rotation
     transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
     // second : translate
@@ -248,19 +250,27 @@ void projection_t()
         camera_cus->far_long = 10000.0f;
     }
     // z --> (0, 1) || x --> (-1 , 1) || y --> (-1, 1)
+    printf("theView-->::::\n");
+
+    PrintMat4(transform);
+
     transform = D3_Homoz(transform);
-    printf("theHomo-->::::\n");
     float k = -(1.0f / 999.0f);
     float b = -k;
     // z should scale and then translate
-    transform = D3_Scale(transform, 1.0f, 1.0f, k);
-    transform = D3_Translate(transform, 0.0f, 0.0f, b);
+    printf("theHomo-->::::\n");
     PrintMat4(transform);
-    usleep(111128000);
+    transform = D3_Scale(transform, 1.0f, 1.0f, k);
+    printf("theD3_Scale-->::::\n");
+    PrintMat4(transform);
+    transform = D3_Translate(transform, 0.0f, 0.0f, b);
+    printf("theD3_Translate-->::::\n");
+    PrintMat4(transform);
+    // usleep(111128000);
 }
 void modify()
 {
-    (transform->element)[15] = (transform->element)[15] + 0.001f;
+    (transform->element)[15] = fabs((transform->element)[15]);
 }
 void draw_triangle()
 {
