@@ -39,7 +39,6 @@ int main(void)
     if (!glfwInit())
         return -1;
 
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -55,15 +54,16 @@ int main(void)
     }
     glfwMakeContextCurrent(window);
     //
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         printf("Failed to initialize OpenGL context\n");
         return -1;
     }
-    
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glEnable(GL_DEPTH_TEST);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {

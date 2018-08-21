@@ -3,6 +3,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+void Mat4Free(ST_MAT4 *mat4)
+{
+    if (mat4 == 0)
+    {
+        return;
+    }
+    if (mat4->element != 0)
+    {
+        free(mat4->element);
+    }
+    free(mat4);
+}
 float Mat4Row_Column(ST_MAT4 *mat4, int row, int column)
 {
     return (mat4->element)[(column - 1) * 4 + (row - 1)];
@@ -123,7 +135,9 @@ ST_MAT4 *D3_Rotate(ST_MAT4 *mat4, float x_degree, float y_degree, float z_degree
     (res->element)[2] = sinx * sinz - cosx * siny * cosz;
     (res->element)[6] = sinx * cosz + cosx * siny * sinz;
     (res->element)[10] = cosx * cosy;
-    return MatMat4(res, mat4);
+    ST_MAT4 *shouldReturn = MatMat4(res, mat4);
+    Mat4Free(res);
+    return shouldReturn;
 }
 
 // x y z means z y x
@@ -135,14 +149,18 @@ ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value
     Mat4SetValue(res, 3, 4, z_value);
     printf("the translate mat is :");
     PrintMat4(res);
-    return MatMat4(res, mat4);
+    ST_MAT4 *shouldReturn = MatMat4(res, mat4);
+    Mat4Free(res);
+    return shouldReturn;
 }
 ST_MAT4 *D3_Homoz(ST_MAT4 *mat4)
 {
     ST_MAT4 *res = NewMat4(0);
     Mat4SetValue(res, 4, 4, 0.0f);
     Mat4SetValue(res, 4, 3, -1.0f);
-    return MatMat4(res, mat4);
+    ST_MAT4 *shouldReturn = MatMat4(res, mat4);
+    Mat4Free(res);
+    return shouldReturn;
 }
 ST_MAT4 *D3_Scale(ST_MAT4 *mat4, float x, float y, float z)
 {
@@ -150,5 +168,7 @@ ST_MAT4 *D3_Scale(ST_MAT4 *mat4, float x, float y, float z)
     Mat4SetValue(res, 1, 1, x);
     Mat4SetValue(res, 2, 2, y);
     Mat4SetValue(res, 3, 3, z);
-    return MatMat4(res, mat4);
+    ST_MAT4 *shouldReturn = MatMat4(res, mat4);
+    Mat4Free(res);
+    return shouldReturn;
 }

@@ -141,7 +141,7 @@ void MeshSetAllContext(void *self, char *image)
     if (data)
     {
         printf("image:%d__%d\n", width, height);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -230,7 +230,9 @@ void view_t()
     }
     float timeValue = glfwGetTime();
 
+    
     camera->z = 2.0f;
+    camera->x_rotate_degree = sin(timeValue) * 90;
     // camera->x_rotate_degree = sin(timeValue) * 90;
     // first : rotation
     transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
