@@ -210,9 +210,13 @@ void model_t()
     myobject->y_rotate_degree = sin(timeValue*0.06) * 360.0f;
     // myobject->z = 1.1f;
     // first : rotation
+    ST_MAT4 *old = transform;
     transform = D3_Rotate(transform, myobject->x_rotate_degree, myobject->y_rotate_degree, myobject->z_rotate_degree);
+    Mat4Free(old);
     // second : translate
+    old = transform;
     transform = D3_Translate(transform, myobject->x, myobject->y, myobject->z);
+    Mat4Free(old);
 }
 void view_t()
 {
@@ -235,9 +239,13 @@ void view_t()
     camera->x_rotate_degree = sin(timeValue) * 90;
     // camera->x_rotate_degree = sin(timeValue) * 90;
     // first : rotation
+    ST_MAT4 *old = transform;
     transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
+    Mat4Free(old);
     // second : translate
+    old = transform;
     transform = D3_Translate(transform, -camera->x, -camera->y, -camera->z);
+    Mat4Free(old);
 }
 void projection_t()
 {
@@ -258,24 +266,31 @@ void projection_t()
     printf("theView-->::::\n");
 
     PrintMat4(transform);
-
+    ST_MAT4 *old = transform;
     transform = D3_Homoz(transform);
+    Mat4Free(old);
     float k = -(1.0f / 999.0f);
     float b = -k;
     // z should scale and then translate
     printf("theHomo-->::::\n");
     PrintMat4(transform);
+    old = transform;
     transform = D3_Scale(transform, 1.0f, 1.0f, k);
+    Mat4Free(old);
     printf("theD3_Scale-->::::\n");
     PrintMat4(transform);
+    old = transform;
     transform = D3_Translate(transform, 0.0f, 0.0f, b);
+    Mat4Free(old);
     printf("theD3_Translate-->::::\n");
     PrintMat4(transform);
     // usleep(111128000);
 }
 void modify()
 {
+    ST_MAT4 *old = transform;
     transform = D3_Translate(transform, 0.0f, 0.5, 0.0f);
+    Mat4Free(old);
 }
 void draw_triangle()
 {
