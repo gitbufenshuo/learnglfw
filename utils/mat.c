@@ -193,7 +193,7 @@ ST_MAT4 *D3_LookAtFrom(ST_VEC3 *point, ST_VEC3 *target, ST_VEC3 *up)
     ST_MAT4 *right = NewMat4(0);
     // first lets calculate the camera-z and camera-x and camera-y
     // camera-z
-    ST_VEC3 *camera_z = ST_VEC3_Sub(target, point);
+    ST_VEC3 *camera_z = ST_VEC3_Sub(point, target);
     ST_VEC3_InPlace_Normalize(camera_z);
     printf("camera-z->\n");
     PrintVec3(camera_z);
@@ -210,33 +210,27 @@ ST_MAT4 *D3_LookAtFrom(ST_VEC3 *point, ST_VEC3 *target, ST_VEC3 *up)
     printf("camera-y->\n");
     PrintVec3(camera_y);
 
-
     // deal with the left mat4
     Mat4SetValue(left, 1, 1, (camera_x->element)[0]);
     Mat4SetValue(left, 1, 2, (camera_x->element)[1]);
     Mat4SetValue(left, 1, 3, (camera_x->element)[2]);
 
     Mat4SetValue(left, 2, 1, (camera_y->element)[0]);
-    Mat4SetValue(left, 2, 1, (camera_y->element)[1]);
-    Mat4SetValue(left, 2, 1, (camera_y->element)[2]);
+    Mat4SetValue(left, 2, 2, (camera_y->element)[1]);
+    Mat4SetValue(left, 2, 3, (camera_y->element)[2]);
 
     Mat4SetValue(left, 3, 1, (camera_z->element)[0]);
     Mat4SetValue(left, 3, 2, (camera_z->element)[1]);
     Mat4SetValue(left, 3, 3, (camera_z->element)[2]);
 
     // deal with the right mat4
-    Mat4SetValue(left, 1, 4, -(point->element)[0]);
-    Mat4SetValue(left, 2, 4, -(point->element)[1]);
-    Mat4SetValue(left, 3, 4, -(point->element)[2]);
+    Mat4SetValue(right, 1, 4, -(point->element)[0]);
+    Mat4SetValue(right, 2, 4, -(point->element)[1]);
+    Mat4SetValue(right, 3, 4, -(point->element)[2]);
 
     // left * right --> view mat4
     ST_MAT4 *res = MatMat4(left, right);
     Mat4Free(left);
     Mat4Free(right);
     return res;
-}
-// lookat 的结果变成自身属性，position 和 rotation,存储到一个 mat4 中
-ST_MAT4 *D3_ViewToSelf(ST_MAT4 *view)
-{
-    return 0;
 }

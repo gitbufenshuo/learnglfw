@@ -235,9 +235,10 @@ void view_t()
     float timeValue = glfwGetTime();
 
     ST_VEC3 point;
-    (point.element)[0] = cos(timeValue);
-    (point.element)[1] = sin(timeValue);
-    (point.element)[2] = 2.0f + sin(timeValue);
+    (point.element)[0] = 2.0f * sin(timeValue);
+    (point.element)[1] = 0.0f;
+    (point.element)[2] = 2.0f * cos(timeValue);
+    printf("camerapos:%f %f %f\n", (point.element)[0], (point.element)[1], (point.element)[2]);
     ST_VEC3 target;
     (target.element)[0] = 0.0f;
     (target.element)[1] = 0.0f;
