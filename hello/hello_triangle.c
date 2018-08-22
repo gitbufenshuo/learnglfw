@@ -206,8 +206,8 @@ void model_t()
     // myobject->x = cos(timeValue);
     // myobject->y = sin(timeValue);
     // printf("myobject->y %f\n", myobject->y);
-    myobject->x_rotate_degree =  30.0f;
-    myobject->y_rotate_degree = sin(timeValue*0.06) * 360.0f;
+    // myobject->x_rotate_degree =  30.0f;
+    // myobject->y_rotate_degree = sin(timeValue*0.06) * 360.0f;
     // myobject->z = 1.1f;
     // first : rotation
     ST_MAT4 *old = transform;
@@ -234,18 +234,36 @@ void view_t()
     }
     float timeValue = glfwGetTime();
 
-    
-    camera->z = 2.0f;
-    camera->x_rotate_degree = sin(timeValue) * 90;
-    // camera->x_rotate_degree = sin(timeValue) * 90;
-    // first : rotation
+    ST_VEC3 point;
+    (point.element)[0] = cos(timeValue);
+    (point.element)[1] = sin(timeValue);
+    (point.element)[2] = 2.0f + sin(timeValue);
+    ST_VEC3 target;
+    (target.element)[0] = 0.0f;
+    (target.element)[1] = 0.0f;
+    (target.element)[2] = 0.0f;
+    ST_VEC3 up;
+    (up.element)[0] = 0.0f;
+    (up.element)[1] = 1.0f;
+    (up.element)[2] = 0.0f;
+    ST_MAT4 *viewT = D3_LookAtFrom(&point, &target, &up);
+    printf("viewT->\n");
+    PrintMat4(viewT);
     ST_MAT4 *old = transform;
-    transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
+    transform = MatMat4(viewT, old);
+    Mat4Free(viewT);
     Mat4Free(old);
-    // second : translate
-    old = transform;
-    transform = D3_Translate(transform, -camera->x, -camera->y, -camera->z);
-    Mat4Free(old);
+    // camera->z = 2.0f;
+    // camera->x = sin(timeValue);
+
+    // first : rotation
+    // ST_MAT4 *old = transform;
+    // transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
+    // Mat4Free(old);
+    // // second : translate
+    // old = transform;
+    // transform = D3_Translate(transform, -camera->x, -camera->y, -camera->z);
+    // Mat4Free(old);
 }
 void projection_t()
 {
