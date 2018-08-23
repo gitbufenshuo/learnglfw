@@ -59,3 +59,11 @@ ST_VEC3 *ST_VEC3_Sub(ST_VEC3 *front, ST_VEC3 *back)
     (res->element)[2] = (front->element)[2] - (back->element)[2];
     return res;
 }
+ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back)
+{
+    ST_VEC3 *res = NewVec3(0.0f, 0.0f, 0.0f);
+    (res->element)[0] = (front->element)[0] + (back->element)[0];
+    (res->element)[1] = (front->element)[1] + (back->element)[1];
+    (res->element)[2] = (front->element)[2] + (back->element)[2];
+    return res;
+}

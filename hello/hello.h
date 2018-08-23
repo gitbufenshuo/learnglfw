@@ -1,5 +1,5 @@
 extern void change_smooth(float step);
-extern void draw_triangle();
+extern void draw_triangle(char key_press);
 
 #ifdef HELLO
 #else
@@ -45,6 +45,7 @@ typedef struct {
 } ST_Gameobject;
 
 typedef struct {
+    float front[3];
     float near_distance;
     float far_distance;
     float near_long;

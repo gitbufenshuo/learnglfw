@@ -34,7 +34,9 @@ extern ST_VEC3 *NewVec3(float a, float b, float c);
 extern ST_VEC3 *Vec3Cross(ST_VEC3 *left, ST_VEC3 *right);
 extern void ST_VEC3_InPlace_Normalize(ST_VEC3 *vec3);
 extern ST_VEC3 *ST_VEC3_Sub(ST_VEC3 *front, ST_VEC3 *back);
+extern ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back);
 extern void PrintVec3(ST_VEC3 *vec3);
+
 
 
 

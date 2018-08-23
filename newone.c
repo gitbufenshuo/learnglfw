@@ -16,14 +16,31 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+static char keyP;
 //
 void processInput(GLFWwindow *window)
 {
+    keyP = 0;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, 1);
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
         printf("you input 9\n");
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        keyP = 'W';
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        keyP = 'S';
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        keyP = 'A';
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        keyP = 'D';
+    }
 }
+
 //
 time_t ts;
 void timestamp()
@@ -80,7 +97,7 @@ int main(void)
 
         /* Render here */
         change_smooth(0.01f);
-        draw_triangle();
+        draw_triangle(keyP);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

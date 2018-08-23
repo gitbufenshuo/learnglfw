@@ -195,6 +195,7 @@ ST_MAT4 *transform;
 ST_Gameobject *camera;
 ST_CUS_CAMERA *camera_cus;
 ST_Gameobject *myobject;
+char keyPressed;
 void model_t()
 {
     if (myobject == 0)
@@ -218,6 +219,9 @@ void model_t()
     transform = D3_Translate(transform, myobject->x, myobject->y, myobject->z);
     Mat4Free(old);
 }
+ST_VEC3 camera_pos; // 相机位置
+ST_VEC3 camera_front; // 相机看的方向
+ST_VEC3 camera_up; // should be constant 人工选定的世界坐标下的 up
 void view_t()
 {
     if (camera == 0)
@@ -231,25 +235,26 @@ void view_t()
         camera_cus->far_distance = 1000.0f;
         camera_cus->near_long = 100.0f;
         camera_cus->far_long = 10000.0f;
+        //
+        (camera_pos.element)[0] = 0.0f;
+        (camera_pos.element)[1] = 0.0f;
+        (camera_pos.element)[2] = 2.0f;
+        //
+        (camera_front.element)[0] = 0.0f;
+        (camera_front.element)[1] = 0.0f;
+        (camera_front.element)[2] = -1.0f;
+        //
+        (camera_up.element)[0] = 0.0f;
+        (camera_up.element)[1] = 1.0f;
+        (camera_up.element)[2] = 0.0f;
     }
+    printf("the key is %c \n", keyPressed);
     float timeValue = glfwGetTime();
-
-    ST_VEC3 point;
-    (point.element)[0] = 0.0f;
-    (point.element)[1] = sin(timeValue);
-    (point.element)[2] = 2.0f;
-    printf("camerapos:%f %f %f\n", (point.element)[0], (point.element)[1], (point.element)[2]);
-    ST_VEC3 target;
-    (target.element)[0] = 0.0f;
-    (target.element)[1] = 0.0f;
-    (target.element)[2] = 0.0f;
-    ST_VEC3 up;
-    (up.element)[0] = 0.0f;
-    (up.element)[1] = 1.0f;
-    (up.element)[2] = 0.0f;
-    ST_MAT4 *viewT = D3_LookAtFrom(&point, &target, &up);
+    ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
+    ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
+    Vec3Free(camera_target);
     printf("viewT->\n");
-    PrintMat4(viewT);
+    // PrintMat4(viewT);
     ST_MAT4 *old = transform;
     transform = MatMat4(viewT, old);
     Mat4Free(viewT);
@@ -284,7 +289,7 @@ void projection_t()
     // z --> (0, 1) || x --> (-1 , 1) || y --> (-1, 1)
     printf("theView-->::::\n");
 
-    PrintMat4(transform);
+    // PrintMat4(transform);
     ST_MAT4 *old = transform;
     transform = D3_Homoz(transform);
     Mat4Free(old);
@@ -292,17 +297,17 @@ void projection_t()
     float b = -k;
     // z should scale and then translate
     printf("theHomo-->::::\n");
-    PrintMat4(transform);
+    // PrintMat4(transform);
     old = transform;
     transform = D3_Scale(transform, 1.0f, 1.0f, k);
     Mat4Free(old);
     printf("theD3_Scale-->::::\n");
-    PrintMat4(transform);
+    // PrintMat4(transform);
     old = transform;
     transform = D3_Translate(transform, 0.0f, 0.0f, b);
     Mat4Free(old);
     printf("theD3_Translate-->::::\n");
-    PrintMat4(transform);
+    // PrintMat4(transform);
     // usleep(111128000);
 }
 void modify()
@@ -311,8 +316,10 @@ void modify()
     transform = D3_Translate(transform, 0.0f, 0.5, 0.0f);
     Mat4Free(old);
 }
-void draw_triangle()
+void draw_triangle(char key_press)
 {
+    keyPressed = 0;
+    keyPressed = key_press;
     jiou++;
     if (transform == 0)
     {
