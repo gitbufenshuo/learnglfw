@@ -219,9 +219,10 @@ void model_t()
     transform = D3_Translate(transform, myobject->x, myobject->y, myobject->z);
     Mat4Free(old);
 }
-ST_VEC3 camera_pos; // 相机位置
+ST_VEC3 camera_pos;   // 相机位置
 ST_VEC3 camera_front; // 相机看的方向
-ST_VEC3 camera_up; // should be constant 人工选定的世界坐标下的 up
+ST_VEC3 camera_up;    // should be constant 人工选定的世界坐标下的 up
+float camera_speed;
 void view_t()
 {
     if (camera == 0)
@@ -247,8 +248,43 @@ void view_t()
         (camera_up.element)[0] = 0.0f;
         (camera_up.element)[1] = 1.0f;
         (camera_up.element)[2] = 0.0f;
+        //
+        camera_speed = 0.1f;
     }
     printf("the key is %c \n", keyPressed);
+    if (keyPressed != 0)
+    {
+        if (keyPressed == 'W')
+        {
+            (camera_pos.element)[0] += (camera_front.element)[0] * camera_speed;
+            (camera_pos.element)[1] += (camera_front.element)[1] * camera_speed;
+            (camera_pos.element)[2] += (camera_front.element)[2] * camera_speed;
+        }
+        if (keyPressed == 'S')
+        {
+            (camera_pos.element)[0] -= (camera_front.element)[0] * camera_speed;
+            (camera_pos.element)[1] -= (camera_front.element)[1] * camera_speed;
+            (camera_pos.element)[2] -= (camera_front.element)[2] * camera_speed;
+        }
+        if (keyPressed == 'A')
+        {
+            ST_VEC3 *left_ = Vec3Cross(&camera_front, &camera_up);
+            ST_VEC3_InPlace_Normalize(left_);
+            (camera_pos.element)[0] -= (left_->element)[0] * camera_speed;
+            (camera_pos.element)[1] -= (left_->element)[1] * camera_speed;
+            (camera_pos.element)[2] -= (left_->element)[2] * camera_speed;
+            Vec3Free(left_);
+        }
+        if (keyPressed == 'D')
+        {
+            ST_VEC3 *left_ = Vec3Cross(&camera_front, &camera_up);
+            ST_VEC3_InPlace_Normalize(left_);
+            (camera_pos.element)[0] += (left_->element)[0] * camera_speed;
+            (camera_pos.element)[1] += (left_->element)[1] * camera_speed;
+            (camera_pos.element)[2] += (left_->element)[2] * camera_speed;
+            Vec3Free(left_);
+        }
+    }
     float timeValue = glfwGetTime();
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
     ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
