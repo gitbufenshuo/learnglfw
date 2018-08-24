@@ -166,11 +166,11 @@ ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value
     return shouldReturn;
 }
 // Z 坐标压缩，实现透视
-ST_MAT4 *D3_Homoz(ST_MAT4 *mat4)
+ST_MAT4 *D3_Homoz(ST_MAT4 *mat4, float z)
 {
     ST_MAT4 *res = NewMat4(0);
     Mat4SetValue(res, 4, 4, 0.0f);
-    Mat4SetValue(res, 4, 3, -1.0f);
+    Mat4SetValue(res, 4, 3, -z);
     ST_MAT4 *shouldReturn = MatMat4(res, mat4);
     Mat4Free(res);
     return shouldReturn;

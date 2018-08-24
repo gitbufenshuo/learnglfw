@@ -330,7 +330,6 @@ void view_t()
     }
     float timeValue = glfwGetTime();
 
-
     dealwith_mouse(mouse_xpos, mouse_ypos);
     dealwith_key();
     //
@@ -364,11 +363,18 @@ void projection_t()
     printf("theView-->::::\n");
 
     // PrintMat4(transform);
+    float timeValue = glfwGetTime();
     ST_MAT4 *old = transform;
-    transform = D3_Homoz(transform);
+    transform = D3_Homoz(transform, camera_cus->near_distance);
     Mat4Free(old);
-    float k = -(1.0f / 999.0f);
-    float b = -k;
+
+    old = transform;
+    transform = D3_Scale(transform, 1.0f/camera_cus->near_long, 1.0f/camera_cus->near_long, 1.0f);
+    Mat4Free(old);
+
+    float k = -(1.0f / (camera_cus->far_distance - camera_cus->near_distance));
+    printf("k-->%f\n", k);
+    float b = k * camera_cus->near_distance;
     // z should scale and then translate
     printf("theHomo-->::::\n");
     // PrintMat4(transform);

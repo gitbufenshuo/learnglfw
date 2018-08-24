@@ -13,7 +13,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     printf("%s__%d\n", "resize", global_count);
     global_count++;
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, 500, 500);
 }
 
 static char keyP;
@@ -71,7 +71,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(500, 500, "Hello World", NULL, NULL);
     if (!window)
     {
         printf("glfwCreateWindow_error\n");
@@ -86,6 +86,7 @@ int main(void)
         return -1;
     }
 
+    // glViewport(0, 0, 500, 500);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
