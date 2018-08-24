@@ -37,7 +37,7 @@ extern ST_VEC3 *ST_VEC3_Sub(ST_VEC3 *front, ST_VEC3 *back);
 extern ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back);
 extern void PrintVec3(ST_VEC3 *vec3);
 
-
+extern float RadiusOfDegree(float);
 
 
 

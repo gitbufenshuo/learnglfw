@@ -223,6 +223,8 @@ ST_VEC3 camera_pos;   // 相机位置
 ST_VEC3 camera_front; // 相机看的方向
 ST_VEC3 camera_up;    // should be constant 人工选定的世界坐标下的 up
 float camera_speed;
+float camera_pitch;
+float camera_yaw;
 void view_t()
 {
     if (camera == 0)
@@ -250,6 +252,15 @@ void view_t()
         (camera_up.element)[2] = 0.0f;
         //
         camera_speed = 0.1f;
+        //
+        camera_pitch = 0.0f;
+        camera_yaw = 0.0f;
+
+    }
+    if (1 == 1) {
+        (camera_front.element)[0] = cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
+        (camera_front.element)[1] = sin(RadiusOfDegree(camera_pitch));
+        (camera_front.element)[2] = cos(RadiusOfDegree(camera_pitch)) * sin(RadiusOfDegree(camera_yaw));
     }
     printf("the key is %c \n", keyPressed);
     if (keyPressed != 0)
@@ -285,6 +296,8 @@ void view_t()
             Vec3Free(left_);
         }
     }
+    // 
+    
     float timeValue = glfwGetTime();
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
     ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
