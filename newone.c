@@ -17,6 +17,15 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 
 static char keyP;
+static double mouse_xpos;
+static double mouse_ypos;
+//
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    mouse_xpos = xpos;
+    mouse_ypos = ypos;
+}
+
 //
 void processInput(GLFWwindow *window)
 {
@@ -78,6 +87,8 @@ int main(void)
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     glEnable(GL_DEPTH_TEST);
@@ -97,7 +108,7 @@ int main(void)
 
         /* Render here */
         change_smooth(0.01f);
-        draw_triangle(keyP);
+        draw_triangle(keyP, mouse_xpos, mouse_ypos);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

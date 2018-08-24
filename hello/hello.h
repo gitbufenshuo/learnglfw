@@ -1,5 +1,5 @@
 extern void change_smooth(float step);
-extern void draw_triangle(char key_press);
+extern void draw_triangle(char key_press, double xpos, double ypos);
 
 #ifdef HELLO
 #else

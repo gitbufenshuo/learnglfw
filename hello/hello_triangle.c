@@ -196,6 +196,11 @@ ST_Gameobject *camera;
 ST_CUS_CAMERA *camera_cus;
 ST_Gameobject *myobject;
 char keyPressed;
+float lastX;
+float lastY;
+double mouse_xpos;
+double mouse_ypos;
+int firstMouse;
 void model_t()
 {
     if (myobject == 0)
@@ -225,44 +230,8 @@ ST_VEC3 camera_up;    // should be constant 人工选定的世界坐标下的 up
 float camera_speed;
 float camera_pitch;
 float camera_yaw;
-void view_t()
+void dealwith_key()
 {
-    if (camera == 0)
-    {
-        camera = malloc(sizeof(ST_Gameobject));
-        memset(camera, 0, sizeof(ST_Gameobject));
-        camera_cus = malloc(sizeof(ST_CUS_CAMERA));
-        memset(camera_cus, 0, sizeof(ST_CUS_CAMERA));
-        camera->custom = camera_cus;
-        camera_cus->near_distance = 1.0f;
-        camera_cus->far_distance = 1000.0f;
-        camera_cus->near_long = 100.0f;
-        camera_cus->far_long = 10000.0f;
-        //
-        (camera_pos.element)[0] = 0.0f;
-        (camera_pos.element)[1] = 0.0f;
-        (camera_pos.element)[2] = 2.0f;
-        //
-        (camera_front.element)[0] = 0.0f;
-        (camera_front.element)[1] = 0.0f;
-        (camera_front.element)[2] = -1.0f;
-        //
-        (camera_up.element)[0] = 0.0f;
-        (camera_up.element)[1] = 1.0f;
-        (camera_up.element)[2] = 0.0f;
-        //
-        camera_speed = 0.1f;
-        //
-        camera_pitch = 0.0f;
-        camera_yaw = 0.0f;
-    }
-    float timeValue = glfwGetTime();
-    if (1 == 1)
-    {
-        (camera_front.element)[0] = cos(RadiusOfDegree(camera_pitch)) * sin(RadiusOfDegree(camera_yaw));
-        (camera_front.element)[1] = sin(RadiusOfDegree(camera_pitch));
-        (camera_front.element)[2] = -cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
-    }
     printf("the key is %c \n", keyPressed);
     if (keyPressed != 0)
     {
@@ -297,6 +266,73 @@ void view_t()
             Vec3Free(left_);
         }
     }
+}
+void dealwith_mouse(double xpos, double ypos)
+{
+    if (firstMouse == 0)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = 1;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.05;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    camera_pitch += yoffset;
+    camera_yaw += xoffset;
+
+    if (camera_pitch > 89.0f)
+        camera_pitch = 89.0f;
+    if (camera_pitch < -89.0f)
+        camera_pitch = -89.0f;
+
+    (camera_front.element)[0] = cos(RadiusOfDegree(camera_pitch)) * sin(RadiusOfDegree(camera_yaw));
+    (camera_front.element)[1] = sin(RadiusOfDegree(camera_pitch));
+    (camera_front.element)[2] = -cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
+}
+void view_t()
+{
+    if (camera == 0)
+    {
+        camera = malloc(sizeof(ST_Gameobject));
+        memset(camera, 0, sizeof(ST_Gameobject));
+        camera_cus = malloc(sizeof(ST_CUS_CAMERA));
+        memset(camera_cus, 0, sizeof(ST_CUS_CAMERA));
+        camera->custom = camera_cus;
+        camera_cus->near_distance = 1.0f;
+        camera_cus->far_distance = 1000.0f;
+        camera_cus->near_long = 100.0f;
+        camera_cus->far_long = 10000.0f;
+        //
+        (camera_pos.element)[0] = 0.0f;
+        (camera_pos.element)[1] = 0.0f;
+        (camera_pos.element)[2] = 2.0f;
+        //
+        (camera_front.element)[0] = 0.0f;
+        (camera_front.element)[1] = 0.0f;
+        (camera_front.element)[2] = -1.0f;
+        //
+        (camera_up.element)[0] = 0.0f;
+        (camera_up.element)[1] = 1.0f;
+        (camera_up.element)[2] = 0.0f;
+        //
+        camera_speed = 0.1f;
+        //
+        camera_pitch = 0.0f;
+        camera_yaw = 0.0f;
+    }
+    float timeValue = glfwGetTime();
+
+
+    dealwith_mouse(mouse_xpos, mouse_ypos);
+    dealwith_key();
     //
 
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
@@ -308,17 +344,6 @@ void view_t()
     transform = MatMat4(viewT, old);
     Mat4Free(viewT);
     Mat4Free(old);
-    // camera->z = 2.0f;
-    // camera->x = sin(timeValue);
-
-    // first : rotation
-    // ST_MAT4 *old = transform;
-    // transform = D3_Rotate(transform, -camera->x_rotate_degree, -camera->y_rotate_degree, -camera->z_rotate_degree);
-    // Mat4Free(old);
-    // // second : translate
-    // old = transform;
-    // transform = D3_Translate(transform, -camera->x, -camera->y, -camera->z);
-    // Mat4Free(old);
 }
 void projection_t()
 {
@@ -365,10 +390,12 @@ void modify()
     transform = D3_Translate(transform, 0.0f, 0.5, 0.0f);
     Mat4Free(old);
 }
-void draw_triangle(char key_press)
+void draw_triangle(char key_press, double xpos, double ypos)
 {
     keyPressed = 0;
     keyPressed = key_press;
+    mouse_xpos = xpos;
+    mouse_ypos = ypos;
     jiou++;
     if (transform == 0)
     {
