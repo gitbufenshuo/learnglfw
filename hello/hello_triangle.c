@@ -255,12 +255,13 @@ void view_t()
         //
         camera_pitch = 0.0f;
         camera_yaw = 0.0f;
-
     }
-    if (1 == 1) {
-        (camera_front.element)[0] = cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
+    float timeValue = glfwGetTime();
+    if (1 == 1)
+    {
+        (camera_front.element)[0] = cos(RadiusOfDegree(camera_pitch)) * sin(RadiusOfDegree(camera_yaw));
         (camera_front.element)[1] = sin(RadiusOfDegree(camera_pitch));
-        (camera_front.element)[2] = cos(RadiusOfDegree(camera_pitch)) * sin(RadiusOfDegree(camera_yaw));
+        (camera_front.element)[2] = -cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
     }
     printf("the key is %c \n", keyPressed);
     if (keyPressed != 0)
@@ -296,9 +297,8 @@ void view_t()
             Vec3Free(left_);
         }
     }
-    // 
-    
-    float timeValue = glfwGetTime();
+    //
+
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
     ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
     Vec3Free(camera_target);
