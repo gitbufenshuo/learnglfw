@@ -169,6 +169,7 @@ ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value
 ST_MAT4 *D3_Homoz(ST_MAT4 *mat4, float z)
 {
     ST_MAT4 *res = NewMat4(0);
+    Mat4SetValue(res, 3, 3, -z);
     Mat4SetValue(res, 4, 4, 0.0f);
     Mat4SetValue(res, 4, 3, -z);
     ST_MAT4 *shouldReturn = MatMat4(res, mat4);

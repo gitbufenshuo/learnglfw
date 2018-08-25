@@ -360,29 +360,29 @@ void projection_t()
         camera_cus->far_long = 10000.0f;
     }
     // z --> (0, 1) || x --> (-1 , 1) || y --> (-1, 1)
-    printf("theView-->::::\n");
+    printf("beforeHomo-->::::\n");
+    PrintMat4(transform);
 
     // PrintMat4(transform);
     float timeValue = glfwGetTime();
     ST_MAT4 *old = transform;
     transform = D3_Homoz(transform, camera_cus->near_distance);
     Mat4Free(old);
+    printf("theHomo-->::::\n");
+    PrintMat4(transform);
 
     old = transform;
     transform = D3_Scale(transform, 1.0f/camera_cus->near_long, 1.0f/camera_cus->near_long, 1.0f);
     Mat4Free(old);
-
     float k = -(1.0f / (camera_cus->far_distance - camera_cus->near_distance));
     printf("k-->%f\n", k);
     float b = k * camera_cus->near_distance;
     // z should scale and then translate
-    printf("theHomo-->::::\n");
-    // PrintMat4(transform);
     old = transform;
     transform = D3_Scale(transform, 1.0f, 1.0f, k);
     Mat4Free(old);
     printf("theD3_Scale-->::::\n");
-    // PrintMat4(transform);
+    PrintMat4(transform);
     old = transform;
     transform = D3_Translate(transform, 0.0f, 0.0f, b);
     Mat4Free(old);
