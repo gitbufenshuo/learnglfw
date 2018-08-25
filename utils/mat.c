@@ -26,8 +26,8 @@ void Mat4SetValue(ST_MAT4 *mat4, int row, int column, float value)
 {
     (mat4->element)[(column - 1) * 4 + (row - 1)] = value;
 }
-// 废弃不用
-ST_VEC4 *MatVec4(ST_MAT4 *mat4, ST_VEC4 *vec4)
+// 就地矩阵乘以矢量
+void MatVec4_Inplace(ST_MAT4 *mat4, ST_VEC4 *vec4)
 {
     float *mat4ele = mat4->element;
     float *vec4ele = vec4->element;
@@ -47,7 +47,6 @@ ST_VEC4 *MatVec4(ST_MAT4 *mat4, ST_VEC4 *vec4)
     {
         vec4ele[i] = temp[i];
     }
-    return vec4;
 }
 // 新建一个矩阵，kind == 0 意味着：单位矩阵
 ST_MAT4 *NewMat4(int kind)
@@ -64,18 +63,6 @@ ST_MAT4 *NewMat4(int kind)
         mat4->element[15] = 1.0f;
     }
     return mat4;
-}
-// 废弃不用
-ST_VEC4 *NewVec4(float one, float two, float three, float four)
-{
-    ST_VEC4 *vec4 = malloc(sizeof(ST_VEC4));
-    memset(vec4, 0, sizeof(ST_VEC4));
-    vec4->element = malloc(sizeof(float) * 4);
-    vec4->element[0] = one;
-    vec4->element[1] = two;
-    vec4->element[2] = three;
-    vec4->element[3] = four;
-    return vec4;
 }
 
 // 打印一个矩阵
@@ -169,9 +156,11 @@ ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value
 ST_MAT4 *D3_Homoz(ST_MAT4 *mat4, float z)
 {
     ST_MAT4 *res = NewMat4(0);
-    Mat4SetValue(res, 3, 3, -z);
+    float p = -(1.0f/z);
+    Mat4SetValue(res, 3, 3, 0.0f);
     Mat4SetValue(res, 4, 4, 0.0f);
-    Mat4SetValue(res, 4, 3, -z);
+    Mat4SetValue(res, 4, 3, p);
+    Mat4SetValue(res, 3, 4, p);
     ST_MAT4 *shouldReturn = MatMat4(res, mat4);
     Mat4Free(res);
     return shouldReturn;

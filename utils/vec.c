@@ -67,3 +67,11 @@ ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back)
     (res->element)[2] = (front->element)[2] + (back->element)[2];
     return res;
 }
+
+void PrintVec4(ST_VEC4 *vec4){
+    printf("vec4:--> \n");
+    for (int i = 0; i!=4; i++) {
+        printf("%f ", (vec4->element)[i]/ (vec4->element)[3]);
+    }
+    printf("%f \n", (vec4->element)[3]);
+}

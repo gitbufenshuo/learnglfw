@@ -26,6 +26,15 @@ unsigned int indices[] = {
     // 2, 1, 3,
     // 1, 0, 3
 };
+ST_VEC4 test_vec4;
+void refreshtest_vec4()
+{
+    test_vec4.element[0] = 1.0f;
+    test_vec4.element[1] = 1.0f;
+    test_vec4.element[2] = 1.0f;
+    test_vec4.element[3] = 1.0f;
+}
+
 void CompileShader(void *self, char *vs, char *fs)
 {
     ST_Shader *myshader = (ST_Shader *)self;
@@ -201,6 +210,13 @@ float lastY;
 double mouse_xpos;
 double mouse_ypos;
 int firstMouse;
+void PrintAll(char *what) {
+    printf("%s:--\n", what);
+    PrintMat4(transform);
+    refreshtest_vec4();
+    MatVec4_Inplace(transform, &test_vec4);
+    PrintVec4(&test_vec4);
+}
 void model_t()
 {
     if (myobject == 0)
@@ -337,8 +353,7 @@ void view_t()
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
     ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
     Vec3Free(camera_target);
-    printf("viewT->\n");
-    // PrintMat4(viewT);
+    
     ST_MAT4 *old = transform;
     transform = MatMat4(viewT, old);
     Mat4Free(viewT);
@@ -360,41 +375,33 @@ void projection_t()
         camera_cus->far_long = 10000.0f;
     }
     // z --> (0, 1) || x --> (-1 , 1) || y --> (-1, 1)
-    printf("beforeHomo-->::::\n");
-    PrintMat4(transform);
-
-    // PrintMat4(transform);
+    PrintAll("beforeHomo");
     float timeValue = glfwGetTime();
     ST_MAT4 *old = transform;
     transform = D3_Homoz(transform, camera_cus->near_distance);
     Mat4Free(old);
-    printf("theHomo-->::::\n");
-    PrintMat4(transform);
+    PrintAll("afterHomo");
 
-    old = transform;
-    transform = D3_Scale(transform, 1.0f/camera_cus->near_long, 1.0f/camera_cus->near_long, 1.0f);
-    Mat4Free(old);
-    float k = -(1.0f / (camera_cus->far_distance - camera_cus->near_distance));
-    printf("k-->%f\n", k);
-    float b = k * camera_cus->near_distance;
+    // old = transform;
+    // transform = D3_Scale(transform, 1.0f / camera_cus->near_long, 1.0f / camera_cus->near_long, 1.0f);
+    // Mat4Free(old);
+    // float k = -(1.0f / (camera_cus->far_distance - camera_cus->near_distance));
+    // printf("k-->%f\n", k);
+    // float b = k * camera_cus->near_distance;
     // z should scale and then translate
-    old = transform;
-    transform = D3_Scale(transform, 1.0f, 1.0f, k);
-    Mat4Free(old);
-    printf("theD3_Scale-->::::\n");
-    PrintMat4(transform);
-    old = transform;
-    transform = D3_Translate(transform, 0.0f, 0.0f, b);
-    Mat4Free(old);
-    printf("theD3_Translate-->::::\n");
-    // PrintMat4(transform);
-    // usleep(111128000);
+    // old = transform;
+    // transform = D3_Scale(transform, 1.0f, 1.0f, k);
+    // Mat4Free(old);
+    // PrintAll("after_z_scale");
+
+    // old = transform;
+    // transform = D3_Translate(transform, 0.0f, 0.0f, b);
+    // Mat4Free(old);
+    // PrintAll("after_z_translate");
 }
 void modify()
 {
-    ST_MAT4 *old = transform;
-    transform = D3_Translate(transform, 0.0f, 0.5, 0.0f);
-    Mat4Free(old);
+    Mat4SetValue(transform, 4, 4, 0.1f);
 }
 void draw_triangle(char key_press, double xpos, double ypos)
 {
@@ -403,6 +410,7 @@ void draw_triangle(char key_press, double xpos, double ypos)
     mouse_xpos = xpos;
     mouse_ypos = ypos;
     jiou++;
+    refreshtest_vec4();
     if (transform == 0)
     {
         transform = NewMat4(0);
@@ -415,7 +423,6 @@ void draw_triangle(char key_press, double xpos, double ypos)
     view_t();
     projection_t();
     // modify();
-    PrintMat4(transform);
     prepare_draw_triangle();
     // float timeValue = glfwGetTime();
     // float change = sin(3.141592f / 2.0f);
@@ -423,9 +430,9 @@ void draw_triangle(char key_press, double xpos, double ypos)
     // (transform->element)[1] = change;
     myShader->use((void *)myShader);
     myShader->setMat4((void *)myShader, "transform", transform->element);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    modify();
-    myShader->setMat4((void *)myShader, "transform", transform->element);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    // modify();
+    // myShader->setMat4((void *)myShader, "transform", transform->element);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

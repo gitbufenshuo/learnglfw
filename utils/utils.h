@@ -9,7 +9,7 @@ typedef struct
 
 typedef struct
 {
-    float* element;
+    float element[4];
 } ST_VEC4;
 typedef struct
 {
@@ -18,12 +18,13 @@ typedef struct
 #endif
 extern ST_VEC4* MatVec4(ST_MAT4* mat4, ST_VEC4* vec4);
 extern ST_MAT4* NewMat4(int kind);
-extern ST_VEC4* NewVec4(float one, float two, float three, float four);
 extern void PrintMat4(ST_MAT4* mat4);
 extern ST_MAT4 *MatMat4(ST_MAT4 *mat4_left, ST_MAT4 *mat4_right);
 extern ST_MAT4 *D3_Rotate(ST_MAT4 *mat4, float x_degree, float y_degree, float z_degree);
 extern ST_MAT4 *D3_Translate(ST_MAT4 *mat4, float x_value, float y_value, float z_value);
 extern void SetMat4Identity(ST_MAT4 *mat4);
+extern void Mat4SetValue(ST_MAT4 *mat4, int row, int column, float value);
+extern void MatVec4_Inplace(ST_MAT4 *mat4, ST_VEC4 *vec4);
 extern ST_MAT4 *D3_Homoz(ST_MAT4 *mat4, float z);
 extern ST_MAT4 *D3_Scale(ST_MAT4 *mat4, float x, float y, float z);
 void Mat4Free(ST_MAT4 *mat4);
@@ -36,6 +37,8 @@ extern void ST_VEC3_InPlace_Normalize(ST_VEC3 *vec3);
 extern ST_VEC3 *ST_VEC3_Sub(ST_VEC3 *front, ST_VEC3 *back);
 extern ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back);
 extern void PrintVec3(ST_VEC3 *vec3);
+
+extern void PrintVec4(ST_VEC4 *vec4);
 
 extern float RadiusOfDegree(float);
 
