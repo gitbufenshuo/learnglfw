@@ -13,26 +13,34 @@
 #include "../utils/stb_image.h"
 
 float vertices[] = {
-    -0.2f, -0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    0.2f, -0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.2f, -0.2f, -0.4f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-    -0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
+    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+    0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
 unsigned int indices[] = {
     // note that we start from 0!
-    0, 1, 3, // first triangle
-    0, 1, 2, // second triangle
+    0, 1, 2, // first triangle
+    3, 4, 5, // second triangle
     0, 3, 2,
-    0, 2, 3
+    0, 4, 3
     // 2, 1, 3,
     // 1, 0, 3
 };
 ST_VEC4 test_vec4;
+ST_VEC4 test_vec4_1;
 void refreshtest_vec4()
 {
     test_vec4.element[0] = 1.0f;
     test_vec4.element[1] = 1.0f;
     test_vec4.element[2] = 1.0f;
     test_vec4.element[3] = 1.0f;
+
+    test_vec4_1.element[0] = 1.0f;
+    test_vec4_1.element[1] = 1.0f;
+    test_vec4_1.element[2] = 0.0f;
+    test_vec4_1.element[3] = 1.0f;
 }
 
 void CompileShader(void *self, char *vs, char *fs)
@@ -150,7 +158,7 @@ void MeshSetAllContext(void *self, char *image)
     if (data)
     {
         printf("image:%d__%d\n", width, height);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -186,7 +194,7 @@ void prepare_draw_triangle()
     myShader->compile((void *)myShader, "./hello/vertex_shader.glsl", "./hello/fragment_shader.glsl");
     // GEN VBO VAO
     myMesh = NewST_Mesh();
-    myMesh->setAll((void *)myMesh, "resource/dota2.png");
+    myMesh->setAll((void *)myMesh, "resource/black_white.png");
     // last. config is set, you can do render in the main loop
 }
 
@@ -210,12 +218,15 @@ float lastY;
 double mouse_xpos;
 double mouse_ypos;
 int firstMouse;
-void PrintAll(char *what) {
+void PrintAll(char *what)
+{
     printf("%s:--\n", what);
     PrintMat4(transform);
     refreshtest_vec4();
     MatVec4_Inplace(transform, &test_vec4);
+    MatVec4_Inplace(transform, &test_vec4_1);
     PrintVec4(&test_vec4);
+    PrintVec4(&test_vec4_1);
 }
 void model_t()
 {
@@ -353,7 +364,7 @@ void view_t()
     ST_VEC3 *camera_target = ST_VEC3_Add(&camera_pos, &camera_front);
     ST_MAT4 *viewT = D3_LookAtFrom(&camera_pos, camera_target, &camera_up);
     Vec3Free(camera_target);
-    
+
     ST_MAT4 *old = transform;
     transform = MatMat4(viewT, old);
     Mat4Free(viewT);
@@ -430,7 +441,7 @@ void draw_triangle(char key_press, double xpos, double ypos)
     // (transform->element)[1] = change;
     myShader->use((void *)myShader);
     myShader->setMat4((void *)myShader, "transform", transform->element);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // modify();
     // myShader->setMat4((void *)myShader, "transform", transform->element);
 
