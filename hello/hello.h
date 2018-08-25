@@ -34,22 +34,5 @@ typedef struct
     Fn_SetAllContext setAll;
 } ST_Mesh;
 
-typedef struct {
-    float x;
-    float y;
-    float z;
-    float x_rotate_degree;
-    float y_rotate_degree;
-    float z_rotate_degree;
-    void* custom;
-} ST_Gameobject;
-
-typedef struct {
-    float front[3];
-    float near_distance;
-    float far_distance;
-    float near_long;
-    float far_long;
-} ST_CUS_CAMERA;
 #define HELLO 1111
 #endif

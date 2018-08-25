@@ -8,7 +8,7 @@
 
 #include "hello.h"
 #include "../utils/file.h"
-#include "../utils/utils.h"
+#include "../mat/mat.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../utils/stb_image.h"
 
@@ -135,6 +135,10 @@ void MeshSetAllContext(void *self, char *image)
     //
     glBindVertexArray(my_mesh->VAO);
     // 3.1 then set our vertex attributes pointers
+    for (int location = 0; location != my_mesh->vertex_location_num; location ++)
+    {
+        glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(0));
+    }
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(0));
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * 4));

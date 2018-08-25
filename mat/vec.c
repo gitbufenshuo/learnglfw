@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "mat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,9 +59,14 @@ ST_VEC3 *ST_VEC3_Sub(ST_VEC3 *front, ST_VEC3 *back)
     (res->element)[2] = (front->element)[2] - (back->element)[2];
     return res;
 }
-ST_VEC3 *ST_VEC3_Add(ST_VEC3 *front, ST_VEC3 *back)
+ST_VEC3 *ST_VEC3_Add_InplaceOP(ST_VEC3 *front, ST_VEC3 *back, ST_VEC3 *_res)
 {
-    ST_VEC3 *res = NewVec3(0.0f, 0.0f, 0.0f);
+    ST_VEC3 *res;
+    if (_res != 0) {
+        res = _res;
+    }else{
+        ST_VEC3 *res = NewVec3(0.0f, 0.0f, 0.0f);
+    }
     (res->element)[0] = (front->element)[0] + (back->element)[0];
     (res->element)[1] = (front->element)[1] + (back->element)[1];
     (res->element)[2] = (front->element)[2] + (back->element)[2];

@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "mat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,10 +9,6 @@ void Mat4Free(ST_MAT4 *mat4)
     if (mat4 == 0)
     {
         return;
-    }
-    if (mat4->element != 0)
-    {
-        free(mat4->element);
     }
     free(mat4);
 }
@@ -53,7 +49,6 @@ ST_MAT4 *NewMat4(int kind)
 {
     ST_MAT4 *mat4 = malloc(sizeof(ST_MAT4));
     memset(mat4, 0, sizeof(ST_MAT4));
-    mat4->element = malloc(sizeof(float) * 16);
     memset(mat4->element, 0, sizeof(float) * 16);
     if (kind == 0)
     { // i
