@@ -130,7 +130,7 @@ void do_draw(ST_Gameobject *gb, ST_MAT4 *mvp)
     glUseProgram(myShader->ID);
     ShaderSetMat4((void *)myShader, "transform", mvp->element);
     ST_Mesh *my_mesh = gb->mesh;
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 void CompileShader(ST_Gameobject *gb)
 {
