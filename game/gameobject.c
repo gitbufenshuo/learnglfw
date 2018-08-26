@@ -35,9 +35,11 @@ void SetVerticesAndTriangle(ST_Gameobject *gb,
 
     gb->mesh = malloc(sizeof(ST_Mesh));
     memset(gb->mesh, 0, sizeof(ST_Mesh));
+
+    (gb->mesh)->vertex_step = vertex_step;
     (gb->mesh)->vertices = malloc(sizeof(float) * vertices_num);
     (gb->mesh)->vertex_length = malloc(sizeof(int) * vertex_location_num);
-    (gb->mesh)->indices = malloc(sizeof(int) * indices_num);
+    (gb->mesh)->indices = malloc(sizeof(unsigned int) * indices_num);
 
     memcpy((gb->mesh)->vertices, vertices, sizeof(float) * vertices_num);
     (gb->mesh)->vertices_num = vertices_num;
@@ -140,4 +142,31 @@ void global_update(ST_Global *global_info)
 
     printf("global_update_last_draw\n");
     last_draw(global_info);
+}
+void printMesh(ST_Mesh *mesh)
+{
+    printf("set->%d\n", mesh->set);
+    printf("vbo->%d\n", mesh->VBO);
+    printf("vao->%d\n", mesh->VAO);
+    printf("ebo->%d\n", mesh->EBO);
+    printf("ver_num->%d\n", mesh->vertices_num);
+    for (int i = 0; i!=mesh->vertices_num; i++) {
+        printf("%f ", mesh->vertices[i]);
+    }
+    printf("\n");
+    printf("ver_step->%d\n", mesh->vertex_step);
+    printf("ver_location_num->%d\n", mesh->vertex_location_num);
+    for (int i = 0; i!= mesh->vertex_location_num; i ++) {
+        printf("%d ", mesh->vertex_length[i]);
+    }
+    printf("\n");
+    printf("indices_num->%d\n", mesh->indices_num);
+    for (int i = 0; i != mesh->indices_num; i ++) {
+        printf("%d ", mesh->indices[i]);
+    }
+    printf("\n");
+}
+void printAllGameobject(ST_Gameobject *gb)
+{
+
 }

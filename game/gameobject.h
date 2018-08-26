@@ -92,3 +92,4 @@ extern int RegisterGameobjectToGlobal(ST_Gameobject *gb);
 extern void draw_init();
 extern void global_update(ST_Global *global_info);
 extern ST_Global *return_global_info();
+extern void printMesh(ST_Mesh *mesh);

@@ -125,12 +125,15 @@ void ShaderSetMat4(void *self, char *name, float *value_list)
 }
 void do_draw(ST_Gameobject *gb, ST_MAT4 *mvp)
 {
+    ST_MAT4 *newmvp = NewMat4(0);
     change_VAO(gb);
     ST_Shader *myShader = (gb->material)->shader;
     glUseProgram(myShader->ID);
-    ShaderSetMat4((void *)myShader, "transform", mvp->element);
+    ShaderSetMat4((void *)myShader, "transform", newmvp->element);
     ST_Mesh *my_mesh = gb->mesh;
+    printMesh(my_mesh);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    free(newmvp);
 }
 void CompileShader(ST_Gameobject *gb)
 {
@@ -189,7 +192,7 @@ void init_for_draw(ST_Gameobject *gb)
     int leiji = 0;
     for (int location = 0; location != my_mesh->vertex_location_num; location++)
     {
-        glVertexAttribPointer(location, (my_mesh->vertex_length)[location], GL_FLOAT, GL_FALSE, my_mesh->vertex_step * sizeof(float), (void *)(leiji));
+        glVertexAttribPointer(location, (my_mesh->vertex_length)[location], GL_FLOAT, GL_FALSE, my_mesh->vertex_step * sizeof(float), (void *)(leiji * sizeof(float)));
         glEnableVertexAttribArray(location);
         leiji += (my_mesh->vertex_length)[location];
     }
