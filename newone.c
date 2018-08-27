@@ -106,7 +106,7 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         // sleep
-        usleep(280000);
+        usleep(28000);
         // get frame per second
         int fps = getfps();
         if (fps > 0)
@@ -124,7 +124,7 @@ int main(void)
         // dealwith opengl input
         globalinfo->keyPressed = keyP;
         globalinfo->mouseX = mouse_xpos;
-        globalinfo->mouseX = mouse_ypos;
+        globalinfo->mouseY = mouse_ypos;
         
         global_update(globalinfo);
 

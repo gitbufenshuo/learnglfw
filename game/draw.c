@@ -13,6 +13,17 @@
 #include "../utils/file.h"
 
 static ST_Global global_info;
+static ST_VEC4 fortest;
+void debug_vector4(ST_MAT4 *mat4, char *why)
+{   
+    printf("%s\n", why);
+    (fortest.element)[0] = 1.0f;
+    (fortest.element)[1] = 1.0f;
+    (fortest.element)[2] = 1.0f;
+    (fortest.element)[3] = 1.0f;
+    MatVec4_Inplace(mat4, &fortest);
+    PrintVec4(&fortest);
+}
 ST_Global *return_global_info()
 {
     return &global_info;
@@ -81,8 +92,11 @@ ST_MAT4 *project(ST_Gameobject *gb)
 ST_MAT4 *MVP(ST_Gameobject *gb)
 {
     ST_MAT4 *M = model(gb);
+    debug_vector4(M, "model_t");
     ST_MAT4 *V = view(gb);
+    debug_vector4(V, "view_t");
     ST_MAT4 *P = project(gb);
+    debug_vector4(P, "project_t");
     ST_MAT4 *VM = MatMat4(V, M);
     ST_MAT4 *PVM = MatMat4(P, VM);
     free(M);
@@ -125,15 +139,13 @@ void ShaderSetMat4(void *self, char *name, float *value_list)
 }
 void do_draw(ST_Gameobject *gb, ST_MAT4 *mvp)
 {
-    ST_MAT4 *newmvp = NewMat4(0);
     change_VAO(gb);
     ST_Shader *myShader = (gb->material)->shader;
     glUseProgram(myShader->ID);
-    ShaderSetMat4((void *)myShader, "transform", newmvp->element);
+    ShaderSetMat4((void *)myShader, "transform", mvp->element);
     ST_Mesh *my_mesh = gb->mesh;
-    printMesh(my_mesh);
+    // printMesh(my_mesh);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-    free(newmvp);
 }
 void CompileShader(ST_Gameobject *gb)
 {
@@ -224,7 +236,6 @@ void init_for_draw(ST_Gameobject *gb)
     }
     stbi_image_free(data);
 }
-static ST_VEC4 fortest;
 void gameobject_draw(ST_Gameobject *gb)
 {
     if (gb->draw_enable == 0)
@@ -244,11 +255,6 @@ void gameobject_draw(ST_Gameobject *gb)
     // don't forget free the mvp
     printf("themvp:-\n");
     PrintMat4(mvp);
-    (fortest.element)[0] = 1.0f;
-    (fortest.element)[1] = 1.0f;
-    (fortest.element)[2] = 1.0f;
-    (fortest.element)[3] = 1.0f;
-    MatVec4_Inplace(mvp, &fortest);
-    PrintVec4(&fortest);
+    debug_vector4(mvp, "last");
     free(mvp);
 }
