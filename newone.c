@@ -6,6 +6,7 @@
 
 #include "utils/math.h"
 #include "utils/time.h"
+#include "game/gameobject.h"
 #include "hello/hello.h"
 //
 int global_count;
@@ -93,11 +94,19 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     glEnable(GL_DEPTH_TEST);
+    ///////////////////////////
+    // gameobject all init
+    printf("mybegin\n");
+    draw_init();
+    printf("mymid\n");
+    InitTriangle();
+    printf("myend\n");
+    ///////////////////////////
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         // sleep
-        usleep(28000);
+        usleep(280000);
         // get frame per second
         int fps = getfps();
         if (fps > 0)
@@ -109,7 +118,15 @@ int main(void)
 
         /* Render here */
         change_smooth(0.01f);
-        draw_triangle(keyP, mouse_xpos, mouse_ypos);
+
+        //
+        ST_Global *globalinfo =  return_global_info();
+        // dealwith opengl input
+        globalinfo->keyPressed = keyP;
+        globalinfo->mouseX = mouse_xpos;
+        globalinfo->mouseX = mouse_ypos;
+        
+        global_update(globalinfo);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
