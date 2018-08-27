@@ -117,7 +117,7 @@ void render_update(ST_Global *global_info)
 {
     for (int i = 0; i != object_num; i++)
     {
-        printf("the render_update %x\n", all_objects[i]->render_update);
+        printf("the render_update %s\n", (unsigned char *)all_objects[i]->render_update);
         if (all_objects[i]->render_update != 0)
         {
             all_objects[i]->render_update(global_info);
@@ -150,23 +150,25 @@ void printMesh(ST_Mesh *mesh)
     printf("vao->%d\n", mesh->VAO);
     printf("ebo->%d\n", mesh->EBO);
     printf("ver_num->%d\n", mesh->vertices_num);
-    for (int i = 0; i!=mesh->vertices_num; i++) {
+    for (int i = 0; i != mesh->vertices_num; i++)
+    {
         printf("%f ", mesh->vertices[i]);
     }
     printf("\n");
     printf("ver_step->%d\n", mesh->vertex_step);
     printf("ver_location_num->%d\n", mesh->vertex_location_num);
-    for (int i = 0; i!= mesh->vertex_location_num; i ++) {
+    for (int i = 0; i != mesh->vertex_location_num; i++)
+    {
         printf("%d ", mesh->vertex_length[i]);
     }
     printf("\n");
     printf("indices_num->%d\n", mesh->indices_num);
-    for (int i = 0; i != mesh->indices_num; i ++) {
+    for (int i = 0; i != mesh->indices_num; i++)
+    {
         printf("%d ", mesh->indices[i]);
     }
     printf("\n");
 }
 void printAllGameobject(ST_Gameobject *gb)
 {
-
 }

@@ -107,7 +107,7 @@ void dealwith_mouse(ST_Global *global_info)
     ((camera->camera_front).element)[1] = sin(RadiusOfDegree(camera_pitch));
     ((camera->camera_front).element)[2] = -cos(RadiusOfDegree(camera_pitch)) * cos(RadiusOfDegree(camera_yaw));
 }
-
+static ST_Gameobject *this;
 static void update(ST_Global *global_info)
 {
     dealwith_key(global_info);
@@ -116,6 +116,7 @@ static void update(ST_Global *global_info)
 void InitTriangle()
 {
     ST_Gameobject *gb = NewGameobject();
+    this = gb;
     printf("mybegin  1\n");
 
     SetVerticesAndTriangle(gb, 48, vertices, 8, 3, vertices_length, sizeof(indices) / sizeof(unsigned int), indices);

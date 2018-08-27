@@ -125,7 +125,7 @@ int main(void)
         globalinfo->keyPressed = keyP;
         globalinfo->mouseX = mouse_xpos;
         globalinfo->mouseY = mouse_ypos;
-        
+        globalinfo->timeValue = glfwGetTime();
         global_update(globalinfo);
 
         /* Swap front and back buffers */
