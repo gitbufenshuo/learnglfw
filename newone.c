@@ -107,7 +107,7 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         // sleep
-        usleep(28000);
+        // usleep(2800);
         // get frame per second
         int fps = getfps();
         if (fps > 0)

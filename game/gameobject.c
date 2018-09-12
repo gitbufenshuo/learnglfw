@@ -119,7 +119,7 @@ void render_update(ST_Global *global_info)
 {
     for (int i = 0; i != object_num; i++)
     {
-        printf("the render_update %s\n", (unsigned char *)all_objects[i]->render_update);
+        // printf("the render_update %s\n", (unsigned char *)all_objects[i]->render_update);
         if (all_objects[i]->render_update != 0)
         {
             all_objects[i]->render_update(global_info);
@@ -136,7 +136,7 @@ void last_draw(ST_Global *global_info)
 void global_update(ST_Global *global_info)
 {
     printf("global_update_logic_update\n");
-    printf("[%d]\n", object_num);
+    printf("whole_object_num[%d]\n", object_num);
     logic_update(global_info);
 
     printf("global_update_render_update\n");
@@ -173,4 +173,9 @@ void printMesh(ST_Mesh *mesh)
 }
 void printAllGameobject(ST_Gameobject *gb)
 {
+}
+ST_Gameobject* shallow_clone(ST_Gameobject *gb){
+    ST_Gameobject* new_gb = NewGameobject();
+    memcpy(new_gb, gb, sizeof(ST_Gameobject));
+    return new_gb;
 }

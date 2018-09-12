@@ -35,7 +35,7 @@ static int gameobjectID;
 static ST_Gameobject *this;
 static void update(ST_Global *global_info)
 {
-
+    // printf("update is called\n");
 }
 void InitTriangle2()
 {
@@ -44,7 +44,7 @@ void InitTriangle2()
     gb->x = -1.0f;
     gb->y = -1.0f;
     gb->z = -1.0f;
-    printf("mybegin2  1\n");
+    printf("%x_mybegin2  1\n", gb);
 
     SetVerticesAndTriangle(gb, 48, vertices, 8, 3, vertices_length, sizeof(indices) / sizeof(unsigned int), indices);
     printf("mybegin2  2\n");
@@ -59,4 +59,19 @@ void InitTriangle2()
     printf("mybegin2  5\n");
 
     gameobjectID = RegisterGameobjectToGlobal(gb);
+    for (int numout = 10; numout != 0; numout--)
+    {
+        for (int num = 10; num != 0; num--)
+        {
+            for (int numin = 10; numin != 0; numin--)
+            {
+                ST_Gameobject *new_one = shallow_clone(gb);
+                new_one->z = (float)numout * -1.0f;
+                new_one->x = (float)num * -1.0f;
+                new_one->y = (float)numin * -1.0f;
+                new_one->draw_prepared = 1;
+                RegisterGameobjectToGlobal(new_one);
+            }
+        }
+    }
 }

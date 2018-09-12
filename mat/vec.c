@@ -6,7 +6,7 @@
 
 void PrintVec3(ST_VEC3 *vec3)
 {
-    printf("[%f %f %f]\n", (vec3->element)[0], (vec3->element)[1], (vec3->element)[2]);
+    // printf("[%f %f %f]\n", (vec3->element)[0], (vec3->element)[1], (vec3->element)[2]);
 }
 // 释放一个vec矢量的内存
 void Vec3Free(ST_VEC3 *vec3)
@@ -74,9 +74,9 @@ ST_VEC3 *ST_VEC3_Add_InplaceOP(ST_VEC3 *front, ST_VEC3 *back, ST_VEC3 *_res)
 }
 
 void PrintVec4(ST_VEC4 *vec4){
-    printf("vec4:--> \n");
+    // printf("vec4:--> \n");
     for (int i = 0; i!=4; i++) {
-        printf("%f ", (vec4->element)[i]/ (vec4->element)[3]);
+        // printf("%f ", (vec4->element)[i]/ (vec4->element)[3]);
     }
-    printf("%f \n", (vec4->element)[3]);
+    // printf("%f \n", (vec4->element)[3]);
 }

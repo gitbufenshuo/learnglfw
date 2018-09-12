@@ -16,7 +16,7 @@ static ST_Global global_info;
 static ST_VEC4 fortest;
 void debug_vector4(ST_MAT4 *mat4, char *why)
 {   
-    printf("%s\n", why);
+    // printf("%s\n", why);
     (fortest.element)[0] = 1.0f;
     (fortest.element)[1] = 1.0f;
     (fortest.element)[2] = 1.0f;
@@ -134,6 +134,7 @@ void ShaderSetFloat(void *self, char *name, float value)
 void ShaderSetMat4(void *self, char *name, float *value_list)
 {
     ST_Shader *myshader = (ST_Shader *)self;
+    // printf("shader_set_mat_4_%d\n", myshader->ID);
     unsigned int transformLoc = glGetUniformLocation(myshader->ID, name);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, value_list);
 }
@@ -166,7 +167,7 @@ void CompileShader(ST_Gameobject *gb)
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        printf("vvv--%s\n", infoLog);
+        // printf("vvv--%s\n", infoLog);
     }
     // fragment
     unsigned int fragmentShader;
@@ -179,7 +180,7 @@ void CompileShader(ST_Gameobject *gb)
     if (!success1)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog1);
-        printf("fff--%s\n", infoLog1);
+        // printf("fff--%s\n", infoLog1);
     }
     //
     myshader->ID = glCreateProgram();
@@ -189,6 +190,7 @@ void CompileShader(ST_Gameobject *gb)
     // delete shader because we have the generated program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    printf("myshader->ID_is_%d\n", myshader->ID);
 }
 void init_for_draw(ST_Gameobject *gb)
 {
@@ -227,19 +229,20 @@ void init_for_draw(ST_Gameobject *gb)
     unsigned char *data = stbi_load(my_materia->texture_path, &width, &height, &nrChannels, 0);
     if (data)
     {
-        printf("image:%d__%d\n", width, height);
+        // printf("image:%d__%d\n", width, height);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
-        printf("fail_to_create_texture_:%s_not_found\n", my_materia->texture_path);
+        // printf("fail_to_create_texture_:%s_not_found\n", my_materia->texture_path);
         usleep(1000000000);
     }
     stbi_image_free(data);
 }
 void gameobject_draw(ST_Gameobject *gb)
 {
+    // printf("%x_gameobject_draw->draw_prepared_%d\n", gb, gb->draw_prepared);
     if (gb->draw_enable == 0)
     {
         return;
@@ -255,7 +258,7 @@ void gameobject_draw(ST_Gameobject *gb)
     // change the opengl buffer context, and do the drawing
     do_draw(gb, mvp);
     // don't forget free the mvp
-    printf("themvp:-\n");
+    // printf("themvp:-\n");
     PrintMat4(mvp);
     debug_vector4(mvp, "last");
     free(mvp);

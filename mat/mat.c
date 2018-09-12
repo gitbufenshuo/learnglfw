@@ -63,11 +63,11 @@ ST_MAT4 *NewMat4(int kind)
 // 打印一个矩阵
 void PrintMat4(ST_MAT4 *mat4)
 {
-    printf("-\n");
+    // printf("-\n");
 
     for (int row = 1; row != 5; row++)
     {
-        printf("%f %f %f %f\n", Mat4Row_Column(mat4, row, 1), Mat4Row_Column(mat4, row, 2), Mat4Row_Column(mat4, row, 3), Mat4Row_Column(mat4, row, 4));
+        // printf("%f %f %f %f\n", Mat4Row_Column(mat4, row, 1), Mat4Row_Column(mat4, row, 2), Mat4Row_Column(mat4, row, 3), Mat4Row_Column(mat4, row, 4));
     }
 }
 
@@ -86,7 +86,7 @@ ST_MAT4 *MatMat4(ST_MAT4 *mat4_left, ST_MAT4 *mat4_right)
                 float f = Mat4Row_Column(mat4_left, row, 1 + index);
                 float b = Mat4Row_Column(mat4_right, 1 + index, column);
                 final_ele += (f * b);
-                // printf("row-->%d  col-->%d  index-->%d::%f*%f=%f\n", row, column, index, f, b, final_ele);
+                // // printf("row-->%d  col-->%d  index-->%d::%f*%f=%f\n", row, column, index, f, b, final_ele);
             }
             Mat4SetValue(res, row, column, final_ele);
         }
@@ -180,19 +180,19 @@ ST_MAT4 *D3_LookAtFrom(ST_VEC3 *point, ST_VEC3 *target, ST_VEC3 *up)
     // camera-z
     ST_VEC3 *camera_z = ST_VEC3_Sub(point, target);
     ST_VEC3_InPlace_Normalize(camera_z);
-    printf("camera-z->\n");
+    // printf("camera-z->\n");
     PrintVec3(camera_z);
 
     // camera-x
     ST_VEC3 *camera_x = Vec3Cross(up, camera_z);
     ST_VEC3_InPlace_Normalize(camera_x);
-    printf("camera-x->\n");
+    // printf("camera-x->\n");
     PrintVec3(camera_x);
 
     // camera-y
     ST_VEC3 *camera_y = Vec3Cross(camera_z, camera_x);
     ST_VEC3_InPlace_Normalize(camera_y);
-    printf("camera-y->\n");
+    // printf("camera-y->\n");
     PrintVec3(camera_y);
 
     // deal with the left mat4
