@@ -54,7 +54,8 @@ void SetVerticesAndTriangle(ST_Gameobject *gb,
 void SetMaterial(ST_Gameobject *gb,
                  char *v_shader_path,
                  char *f_shader_path,
-                 char *t_image_path)
+                 char *t_image_path,
+                 int texture_repeat_mode)
 {
     if (gb->set != 0)
     {
@@ -64,6 +65,7 @@ void SetMaterial(ST_Gameobject *gb,
     }
     gb->material = malloc(sizeof(ST_Material));
     memset(gb->material, 0, sizeof(ST_Material));
+    (gb->material)->vertex_repeat_mode = texture_repeat_mode;
     (gb->material)->shader = malloc(sizeof(ST_Shader));
     memset((gb->material)->shader, 0, sizeof(ST_Shader));
 

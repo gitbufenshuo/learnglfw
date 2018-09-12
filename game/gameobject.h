@@ -29,6 +29,7 @@ typedef struct
     char fragment_shader_path[50]; // fragment shader 文件的路径
     char texture_path[50];         // 纹理图片的路径
     unsigned int TBO;              // texture buffer object
+    int vertex_repeat_mode;
     ST_Shader *shader;
 } ST_Material;
 typedef struct
@@ -85,7 +86,8 @@ extern void SetVerticesAndTriangle(ST_Gameobject *gb,
 extern void SetMaterial(ST_Gameobject *gb,
                         char *v_shader_path,
                         char *f_shader_path,
-                        char *t_image_path);
+                        char *t_image_path,
+                        int texture_repeat_mode);
 extern void SetUpdate(ST_Gameobject *gb, int kind, void *fn);
 extern void SetDrawEnable(ST_Gameobject *gb, int isEnable);
 extern int RegisterGameobjectToGlobal(ST_Gameobject *gb);

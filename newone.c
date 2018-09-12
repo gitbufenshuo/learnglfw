@@ -100,6 +100,7 @@ int main(void)
     draw_init();
     printf("mymid\n");
     InitTriangle();
+    InitTriangle2();
     printf("myend\n");
     ///////////////////////////
     /* Loop until the user closes the window */

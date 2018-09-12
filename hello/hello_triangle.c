@@ -9,9 +9,10 @@
 #include "../mat/mat.h"
 #include "../game/gameobject.h"
 
+// vertex_pos[3], vertex_color[3], uv[2]
 static float vertices[] = {
     -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 2.0f,
     0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
     -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
     -0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
@@ -35,7 +36,7 @@ static float camera_pitch;
 static float camera_yaw;
 static int gameobjectID;
 ////////////
-void dealwith_key(ST_Global *global_info)
+static void dealwith_key(ST_Global *global_info)
 {
     char keyPressed = global_info->keyPressed;
     printf("dealwith_key %c \n", global_info->keyPressed);
@@ -75,7 +76,7 @@ void dealwith_key(ST_Global *global_info)
         }
     }
 }
-void dealwith_mouse(ST_Global *global_info)
+static void dealwith_mouse(ST_Global *global_info)
 {
     printf("dealwith_mouse %f %f \n", global_info->mouseX, global_info->mouseY);
 
@@ -122,7 +123,7 @@ void InitTriangle()
     SetVerticesAndTriangle(gb, 48, vertices, 8, 3, vertices_length, sizeof(indices) / sizeof(unsigned int), indices);
     printf("mybegin  2\n");
 
-    SetMaterial(gb, "hello/vertex_shader.glsl", "hello/fragment_shader.glsl", "resource/black_white.png");
+    SetMaterial(gb, "hello/vertex_shader.glsl", "hello/fragment_shader.glsl", "resource/black_white.png", GL_REPEAT);
     printf("mybegin  3\n");
 
     SetUpdate(gb, 0, update);

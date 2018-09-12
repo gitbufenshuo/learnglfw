@@ -140,7 +140,9 @@ void ShaderSetMat4(void *self, char *name, float *value_list)
 void do_draw(ST_Gameobject *gb, ST_MAT4 *mvp)
 {
     change_VAO(gb);
-    ST_Shader *myShader = (gb->material)->shader;
+    ST_Material *myMaterial = gb->material;
+    glBindTexture(GL_TEXTURE_2D, myMaterial->TBO);
+    ST_Shader *myShader = myMaterial->shader;
     glUseProgram(myShader->ID);
     ShaderSetMat4((void *)myShader, "transform", mvp->element);
     ST_Mesh *my_mesh = gb->mesh;
@@ -215,8 +217,8 @@ void init_for_draw(ST_Gameobject *gb)
     ST_Material *my_materia = gb->material;
     glGenTextures(1, &(my_materia->TBO));
     glBindTexture(GL_TEXTURE_2D, my_materia->TBO);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, my_materia->vertex_repeat_mode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, my_materia->vertex_repeat_mode);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     int width, height, nrChannels;
